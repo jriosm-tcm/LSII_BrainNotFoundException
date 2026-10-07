@@ -5,8 +5,10 @@
       <option name="myRunnerSettings">
         <MavenRunnerSettings>
           <option name="delegateBuildToMaven" value="false" />
-
-          <option name="jreName" value="#USE_PROJECT_JDK" />
+          <option name="environmentProperties">
+            <map />
+          </option>
+          <option name="jreName" value="corretto-21" />
           <option name="mavenProperties">
             <map />
           </option>
