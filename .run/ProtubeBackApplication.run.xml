@@ -1,5 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="ProtubeBackApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <option name="ACTIVE_PROFILES" value="dev" />
     <envs>
       <env name="ENV_PROTUBE_GOOGLE_CLIENT_ID" value="" />
       <env name="ENV_PROTUBE_GOOGLE_CLIENT_SECRET" value="" />
