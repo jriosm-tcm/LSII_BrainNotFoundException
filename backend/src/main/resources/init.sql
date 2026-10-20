@@ -1,48 +1,55 @@
--- Script para inicializar la base de datos
 
 CREATE TABLE videos (
     id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
-    description TEXT,
-    url VARCHAR(2083) NOT NULL,
-    thumbnail_url VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    description TEXT
 );
 
--- Insertar los videos de la carpeta "videos"
-INSERT INTO videos (title, description, url, thumbnail_url) VALUES
-('Video 0', 'Descripción del Video 0', 'videos/0.mp4', 'videos/0.webp'),
-('Video 1', 'Descripción del Video 1', 'videos/1.mp4', 'videos/1.webp'),
-('Video 2', 'Descripción del Video 2', 'videos/2.mp4', 'videos/2.webp'),
-('Video 3', 'Descripción del Video 3', 'videos/3.mp4', 'videos/3.webp'),
-('Video 4', 'Descripción del Video 4', 'videos/4.mp4', 'videos/4.webp'),
-('Video 5', 'Descripción del Video 5', 'videos/5.mp4', 'videos/5.webp'),
-('Video 6', 'Descripción del Video 6', 'videos/6.mp4', 'videos/6.webp'),
-('Video 7', 'Descripción del Video 7', 'videos/7.mp4', 'videos/7.webp'),
-('Video 9', 'Descripción del Video 9', 'videos/9.mp4', 'videos/9.webp'),
-('Video 10', 'Descripción del Video 10', 'videos/10.mp4', 'videos/10.webp'),
-('Video 11', 'Descripción del Video 11', 'videos/11.mp4', 'videos/11.webp'),
-('Video 12', 'Descripción del Video 12', 'videos/12.mp4', 'videos/12.webp'),
-('Video 13', 'Descripción del Video 13', 'videos/13.mp4', 'videos/13.webp'),
-('Video 14', 'Descripción del Video 14', 'videos/14.mp4', 'videos/14.webp'),
-('Video 15', 'Descripción del Video 15', 'videos/15.mp4', 'videos/15.webp'),
-('Video 16', 'Descripción del Video 16', 'videos/16.mp4', 'videos/16.webp'),
-('Video 17', 'Descripción del Video 17', 'videos/17.mp4', 'videos/17.webp'),
-('Video 18', 'Descripción del Video 18', 'videos/18.mp4', 'videos/18.webp'),
-('Video 19', 'Descripción del Video 19', 'videos/19.mp4', 'videos/19.webp'),
-('Video 20', 'Descripción del Video 20', 'videos/20.mp4', 'videos/20.webp'),
-('Video 21', 'Descripción del Video 21', 'videos/21.mp4', 'videos/21.webp'),
-('Video 22', 'Descripción del Video 22', 'videos/22.mp4', 'videos/22.webp'),
-('Video 24', 'Descripción del Video 24', 'videos/24.mp4', 'videos/24.webp'),
-('Video 25', 'Descripción del Video 25', 'videos/25.mp4', 'videos/25.webp'),
-('Video 26', 'Descripción del Video 26', 'videos/26.mp4', 'videos/26.webp'),
-('Video 27', 'Descripción del Video 27', 'videos/27.mp4', 'videos/27.webp'),
-('Video 28', 'Descripción del Video 28', 'videos/28.mp4', 'videos/28.webp'),
-('Video 29', 'Descripción del Video 29', 'videos/29.mp4', 'videos/29.webp'),
-('Video 30', 'Descripción del Video 30', 'videos/30.mp4', 'videos/30.webp'),
-('Video 31', 'Descripción del Video 31', 'videos/31.mp4', 'videos/31.webp'),
-('Video 32', 'Descripción del Video 32', 'videos/32.mp4', 'videos/32.webp'),
-('Video 33', 'Descripción del Video 33', 'videos/33.mp4', 'videos/33.webp'),
-('Video 34', 'Descripción del Video 34', 'videos/34.mp4', 'videos/34.webp'),
-('Video 35', 'Descripción del Video 35', 'videos/35.mp4', 'videos/35.webp'),
-('Video 37', 'Descripción del Video 37', 'videos/37.mp4', 'videos/37.webp');
+INSERT INTO videos (id, title, description) VALUES
+(0, 'Bruno Mars - 24K Magic (Official Music Video)', 'The official music video for Bruno Mars'' "24K Magic" from the album ''24K Magic''.
+
+The Romantic – the new album from Bruno Mars, available now. Listen now: https://brunomars.lnk.to/theromantic
+
+Stream or Download 24K Magic: https://brunomars.lnk.to/24KMagic
+
+Join Bruno’s mailing list: https://drop.cobrand.com/d/BrunoMars/Subscribe
+
+Shop Bruno’s official store: https://brunomars.lnk.to/officialstore
+
+Connect with Bruno: 
+https://www.tiktok.com/@brunomars
+https://www.instagram.com/brunomars
+https://www.youtube.com/brunomars
+https://x.com/brunomars
+https://www.facebook.com/brunomars
+
+https://brunomars.com
+
+Bruno Mars is a 16x GRAMMY®-winning global superstar, singer, songwriter, multi-instrumentalist, producer, and one of the most-streamed artists in the world. Known for his showmanship and chart-toppers, Bruno has set a number of records throughout his career, including becoming the first artist ever to hit 150 million monthly listeners on Spotify, appearing on two of the fastest songs to reach one billion streams (for “Die with a Smile” with Lady Gaga and “APT.” with ROSÉ, and achieving the highest-certified song in RIAA history with 2010’s “Just the Way You Are”). Since launching a string of hits beginning in 2009, Bruno has sold over 150 million records worldwide, making him one of the best-selling artists of all time. Beyond his work as a soloist, Bruno is a member of the duo Silk Sonic with Anderson .Paak. In addition to his 35 Billboard Hot 100 hits, including nine number one singles, Bruno is the recipient of 16 GRAMMY® Awards (including “Album of the Year” for 24K Magic), 14 American Music Awards, and seven MTV Video Music Awards. His 24K Magic World Tour was among the highest-grossing tours in history, and within the top ten highest-grossing of the 2010s.
+
+#BrunoMars #24KMagic #AtlanticRecords #OfficialMusicVideo'),
+
+(1, 'Taylor Swift - Shake It Off', 'Music video by Taylor Swift performing Shake It Off. (C) 2014 Taylor Swift.
+
+Stream/download ‘The Life of a Showgirl’ - https://taylor.lnk.to/TSTheLifeofaShowgirlYD
+
+►Shop Merch: http://taylor.lnk.to/store
+►Subscribe to Taylor Swift on YouTube: https://ts.lnk.to/subscribe
+
+►Follow Taylor Swift Online:
+TikTok: http://tiktok.com/@taylorswift
+Instagram: http://instagram.com/taylorswift
+Twitter: http://twitter.com/taylorswift13
+Snapchat: http://snapchat.com/add/taylorswift
+Facebook: http://facebook.com/taylorswift
+Tumblr: http://taylorswift.tumblr.com
+Website: http://www.taylorswift.com
+
+►Follow Taylor Nation Online:
+TikTok: http://tiktok.com/@taylornation
+Instagram: http://instagram.com/taylornation
+YouTube: https://youtube.com/taylornation
+Twitter: http://twitter.com/taylornation13
+Tumblr: http://taylornation.tumblr.com
+
+#TaylorSwift #ShakeItOff');
