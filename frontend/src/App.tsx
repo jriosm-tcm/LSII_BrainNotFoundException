@@ -1,14 +1,20 @@
 import './App.css';
 import { useAllVideos } from './useAllVideos';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import VideosPage from './pages/VideosPage';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src="/protube-logo-removebg-preview.png" className="App-logo" alt="logo" />
-        <ContentApp />
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <header className="App-header">
+          <img src="/protube-logo-removebg-preview.png" className="App-logo" alt="logo" />
+        </header>
+        <Routes>
+          <Route path="/videos" element={<VideosPage />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
@@ -28,8 +34,10 @@ function ContentApp() {
         <>
           <strong>Videos availables:</strong>
           <ul>
-            {value.map((item) => (
-              <li>{item}</li>
+            {value.map((item: any) => (
+              <li>
+                {item.title} - {item.thumbnailUrl}
+              </li>
             ))}
           </ul>
         </>
