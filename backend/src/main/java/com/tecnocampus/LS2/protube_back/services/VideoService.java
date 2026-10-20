@@ -23,8 +23,8 @@ public class VideoService {
                         rs.getLong("id"),
                         rs.getString("title"),
                         rs.getString("description"),
-                        (rs.getString("id") + ".mp4"),
-                        (rs.getString("id") + ".webp")
+                        ('/' + rs.getString("id") + ".mp4"),
+                        ('/' + rs.getString("id") + ".webp")
                 )
         );
     }
@@ -37,8 +37,8 @@ public class VideoService {
                         rs.getLong("id"),
                         rs.getString("title"),
                         rs.getString("description"),
-                        (rs.getString("id") + ".mp4"),
-                        (rs.getString("id") + ".webp")
+                        ('/' + rs.getString("id") + ".mp4"),
+                        ('/' + rs.getString("id") + ".webp")
                 )
         );
     }
