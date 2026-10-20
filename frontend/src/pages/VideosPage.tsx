@@ -27,14 +27,14 @@ const VideosPage = () => {
     return (
       <div className="video-grid">
         {value.map((video: any) => (
-          <div key={video.id} className="video-item">
+          <a key={video.id} className="video-item" href={`/video/${video.id}`}>
             <img
               src={`${getEnv().MEDIA_BASE_URL}${video.thumbnailUrl}`}
               alt={video.title}
               className="video-thumbnail"
             />
             <p className="video-title">{video.title}</p>
-          </div>
+          </a>
         ))}
       </div>
     );
