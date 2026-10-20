@@ -1,9 +1,14 @@
+import { useEffect } from 'react';
 import { useAllVideos } from '../useAllVideos';
 import { getEnv } from '../utils/Env';
 import './VideosPage.css';
 
 const VideosPage = () => {
   const { loading, message, value } = useAllVideos();
+
+  useEffect(() => {
+    document.title = 'ProTube - Videos';
+  }, []);
 
   if (loading === 'loading') {
     return <div>Loading...</div>;
