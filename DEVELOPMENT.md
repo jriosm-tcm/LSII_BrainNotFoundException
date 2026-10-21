@@ -173,13 +173,28 @@ To only preview the production frontend bundle, without the backend: `cd fronten
 
 ### Using PostgreSQL
 
-The `prod` profile still points to an in-memory H2 database, which is only a placeholder — the MVP requires a real
-database (NFR-01 in [REQUIREMENT.md](./REQUIREMENT.md)). The PostgreSQL driver is already a dependency. To switch:
+#### Local Docker connection (Windows / IntelliJ)
 
-1. Start a PostgreSQL server (e.g. `docker run -d --name protube-db -p 5432:5432 -e POSTGRES_PASSWORD=secret -e POSTGRES_DB=protube postgres:16`).
-2. In `backend/src/main/resources/application.properties`, in the `prod` section, uncomment the PostgreSQL
-   `spring.datasource.url` line and remove the H2 one.
-3. Set `ENV_PROTUBE_DB` (e.g. `protube`), `ENV_PROTUBE_DB_USER` (e.g. `postgres`) and `ENV_PROTUBE_DB_PWD`.
+1. Start Docker Desktop. In the repository root, configure `.env` with
+   `ENV_PROTUBE_DB_USER`, `ENV_PROTUBE_DB_PASS`, `ENV_PROTUBE_DB` and
+   `ENV_PROTUBE_DB_HOST=localhost`.
+2. Run `docker compose up -d db`, then `docker compose ps`. The `db` service
+   should become healthy. Data is persisted in the `postgres_data` volume.
+3. Run **ProtubeBackApplication** in IntelliJ. Its shared configuration selects
+   the Spring `prod` profile and sets the video-store directory. The backend
+   reads `.env` when started from the repository root or `backend/`; environment
+   variables override the file.
+4. Check `http://localhost:8080/api/videos`. The PostgreSQL schema creates the
+   `videos` table if missing; a new database returns an empty list until data
+   is imported. Downloading media files alone does not insert database rows.
+
+For a database client use host `localhost`, port `5432`, and the database/user/
+password configured in `.env`. To stop PostgreSQL without deleting data, run
+`docker compose stop db`. Existing volume credentials are preserved: changing
+`.env` does not change an existing PostgreSQL user's password.
+
+Tests can continue to use H2 with Maven `-Pdev -Dspring.profiles.active=dev clean verify`.
+
 
 ## 6. Workflow reminders
 
