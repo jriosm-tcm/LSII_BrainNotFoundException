@@ -1,9 +1,11 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="ProtubeBackApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <option name="ALTERNATIVE_JRE_PATH" value="$USER_HOME$/.jdks/corretto-21.0.12.1" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <envs>
       <env name="ENV_PROTUBE_GOOGLE_CLIENT_ID" value="" />
       <env name="ENV_PROTUBE_GOOGLE_CLIENT_SECRET" value="" />
-      <env name="ENV_PROTUBE_STORE_DIR" value="D:\code\videos" />
+      <env name="ENV_PROTUBE_STORE_DIR" value="$USER_HOME$/Documents\enginyeria_software2\videos" />
     </envs>
     <module name="protube-back" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.tecnocampus.LS2.protube_back.ProtubeBackApplication" />

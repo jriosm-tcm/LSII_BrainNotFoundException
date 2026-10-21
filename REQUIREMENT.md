@@ -23,7 +23,7 @@ features reserved for registered users.
 * Given a visitor submits an email that is already registered, when they submit the form, then a clear error is
   shown and no duplicate account is created.
 * Given a visitor submits an invalid email or a password that doesn't meet the minimum policy, when they submit
-  the form, then validation errors are shown and no account is created.
+  the form, then validation errors are shown and no accou2znt is created.
 
 **Priority:** Must have · **Estimate:** 3
 

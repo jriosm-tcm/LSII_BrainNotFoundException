@@ -12,6 +12,8 @@ This has been added to the gitignore, so each team member can have an specific c
 
 
 # Here you have your own path
-YT_DLP_BIN="/home/myuser/yt-dlp_linux"
-FFMPEG_BIN="ffmpeg"
-FFPROBE_BIN="ffprobe"
+YT_DLP_BIN = r"C:\Users\alexi\AppData\Roaming\Python\Python313\Scripts\yt-dlp.exe"
+
+FFMPEG_BIN = r"C:\Users\alexi\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-9.0.2-full_build\bin\ffmpeg.exe"
+
+FFPROBE_BIN = r"C:\Users\alexi\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-9.0.2-full_build\bin\ffprobe.exe"

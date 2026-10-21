@@ -49,6 +49,7 @@ def compute_cut_params(v: str, full_duration: int) -> dict[str, int]:
 def grab_video(v:str, id: int):
     YT_URL = "https://www.youtube.com/watch"
     CONSTANT_DLP_PARAMS = ("--quiet --no-overwrites --write-comments --extractor-args youtube:max_comments={} "
+                           "--ffmpeg-location C:\\Users\\alexi\\AppData\\Local\\Microsoft\\WinGet\\Packages\\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\\ffmpeg-9.0.2-full_build\\bin "
                            "--remux-video mp4 --write-info-json --write-thumbnail --convert-thumbnails webp --embed-thumbnail"
                            .format(random.randint(1, 14)))
 
