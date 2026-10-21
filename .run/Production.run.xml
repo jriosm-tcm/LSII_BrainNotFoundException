@@ -7,7 +7,13 @@
           <option name="delegateBuildToMaven" value="false" />
           <option name="environmentProperties">
             <map>
-              <entry key="ENV_PROTUBE_STORE_DIR" value="D:\code\videos\" />
+              <entry key="ENV_PROTUBE_DB" value="tutube_db" />
+              <entry key="ENV_PROTUBE_DB_HOST" value="localhost" />
+              <entry key="ENV_PROTUBE_DB_PASS" value="admin" />
+              <entry key="ENV_PROTUBE_DB_USER" value="admin" />
+              <entry key="ENV_PROTUBE_GOOGLE_CLIENT_ID" value="your_google_client_id" />
+              <entry key="ENV_PROTUBE_GOOGLE_CLIENT_SECRET" value="your_google_client_secret" />
+              <entry key="ENV_PROTUBE_STORE_DIR" value="$PROJECT_DIR$/videos" />
             </map>
           </option>
           <option name="jreName" value="corretto-21" />
