@@ -22,7 +22,7 @@ public class MvcConfig implements WebMvcConfigurer {
         registry
            .addResourceHandler("/media/**")
            .addResourceLocations(
-                   String.format("file:%s", env.getProperty("pro_tube.store.dir")));
+                   java.nio.file.Path.of(env.getRequiredProperty("pro_tube.store.dir")).toAbsolutePath().normalize().toUri().toString());
 
         registry.addResourceHandler("/**")
            .addResourceLocations("classpath:/static/", "classpath:/public/",
