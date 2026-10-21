@@ -18,7 +18,7 @@ public class VideosController {
     VideoService videoService;
 
     @GetMapping("")
-    public ResponseEntity<List<String>> getVideos() {
+    public ResponseEntity<List<java.util.Map<String, Object>>> getVideos() {
         return ResponseEntity.ok().body(videoService.getVideos());
 
     }
