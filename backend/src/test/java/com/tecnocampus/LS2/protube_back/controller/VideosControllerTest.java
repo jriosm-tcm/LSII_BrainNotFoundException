@@ -1,6 +1,7 @@
 package com.tecnocampus.LS2.protube_back.controller;
 
-import com.tecnocampus.LS2.protube_back.services.VideoService;
+import com.tecnocampus.LS2.protube_back.adapter.in.controller.VideosController;
+import com.tecnocampus.LS2.protube_back.application.services.VideoService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

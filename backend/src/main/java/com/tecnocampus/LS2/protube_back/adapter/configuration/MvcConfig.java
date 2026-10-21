@@ -1,4 +1,4 @@
-package com.tecnocampus.LS2.protube_back.configuration;
+package com.tecnocampus.LS2.protube_back.adapter.configuration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
