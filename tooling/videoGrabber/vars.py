@@ -1,19 +1,10 @@
+"""Executable paths for videoGrabber.
+
+Install yt-dlp and FFmpeg and add their executables to PATH.
+Set YT_DLP_BIN, FFMPEG_BIN or FFPROBE_BIN to override paths locally.
 """
-Each one of the following variables holds the name of the program related to it.
-For instance, FFMPEG_BIN in Windows would be ffmpeg.exe, whereas in Linux/macOS would be ffmpeg
-If these programs cannot be located through your PATH environment variable, either:
- - modify PATH
- - include the absolute path in the variable content. Example for yt-dlp
-Remember you can download the yt-dlp matching your system here:
-https://github.com/yt-dlp/yt-dlp?tab=readme-ov-file#release-files
+import os
 
-This has been added to the gitignore, so each team member can have an specific configuration
-"""
-
-
-# Here you have your own path
-YT_DLP_BIN = r"C:\Users\alexi\AppData\Roaming\Python\Python313\Scripts\yt-dlp.exe"
-
-FFMPEG_BIN = r"C:\Users\alexi\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-9.0.2-full_build\bin\ffmpeg.exe"
-
-FFPROBE_BIN = r"C:\Users\alexi\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-9.0.2-full_build\bin\ffprobe.exe"
+YT_DLP_BIN = os.environ.get("YT_DLP_BIN", "yt-dlp")
+FFMPEG_BIN = os.environ.get("FFMPEG_BIN", "ffmpeg")
+FFPROBE_BIN = os.environ.get("FFPROBE_BIN", "ffprobe")
