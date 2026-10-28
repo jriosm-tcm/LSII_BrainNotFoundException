@@ -1,4 +1,4 @@
-package com.tecnocampus.LS2.protube_back.application.model;
+package com.tecnocampus.LS2.protube_back.domain.model;
 
 public class Video {
 
