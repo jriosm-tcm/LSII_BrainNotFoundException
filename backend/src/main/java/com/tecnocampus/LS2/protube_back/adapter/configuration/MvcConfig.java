@@ -19,16 +19,20 @@ public class MvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry
-           .addResourceHandler("/media/**")
-           .addResourceLocations(
-                   String.format("file:%s", env.getProperty("pro_tube.store.dir")));
+        String storeDir = env.getProperty("pro_tube.store.dir");
+
+        LOG.info("Video storage directory: {}", storeDir);
+
+        registry.addResourceHandler("/media/**")
+                .addResourceLocations("file:" + storeDir + "/");
 
         registry.addResourceHandler("/**")
-           .addResourceLocations("classpath:/static/", "classpath:/public/",
+                .addResourceLocations(
+                        "classpath:/static/",
+                        "classpath:/public/",
                         "classpath:/resources/",
                         "classpath:/META-INF/resources/")
-           .setCachePeriod(3600);
+                .setCachePeriod(3600);
     }
 
     @Override

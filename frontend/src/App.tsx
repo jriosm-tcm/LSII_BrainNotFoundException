@@ -1,41 +1,30 @@
 import './App.css';
-import { useAllVideos } from './useAllVideos';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import VideosPage from './pages/VideosPage';
+import VideoDetailPage from './pages/VideoDetailPage';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src="/protube-logo-removebg-preview.png" className="App-logo" alt="logo" />
-        <ContentApp />
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <header className="App-header">
+                <img src="/protube-logo-removebg-preview.png" className="App-logo" alt="logo" />
+                <main>
+                  <button onClick={() => (window.location.href = '/videos')}>Ir a Videos</button>
+                </main>
+              </header>
+            </>
+          }
+        />
+        <Route path="/videos" element={<VideosPage />} />
+        <Route path="/video/:id" element={<VideoDetailPage />} />
+      </Routes>
+    </Router>
   );
-}
-
-function ContentApp() {
-  const { loading, message, value } = useAllVideos();
-  switch (loading) {
-    case 'loading':
-      return <div>Loading...</div>;
-    case 'error':
-      return (
-        <div>
-          <h3>Error</h3> <p>{message}</p>
-        </div>
-      );
-    case 'success':
-      return (
-        <>
-          <strong>Videos availables:</strong>
-          <ul>
-            {value.map((item) => (
-              <li>{item}</li>
-            ))}
-          </ul>
-        </>
-      );
-  }
-  return <div>Idle...</div>;
 }
 
 export default App;
