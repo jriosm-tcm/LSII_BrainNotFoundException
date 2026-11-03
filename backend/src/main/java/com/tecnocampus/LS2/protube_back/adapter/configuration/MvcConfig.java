@@ -24,7 +24,13 @@ public class MvcConfig implements WebMvcConfigurer {
         LOG.info("Video storage directory: {}", storeDir);
 
         registry.addResourceHandler("/media/**")
-                .addResourceLocations("file:" + storeDir + "/");
+                .addResourceLocations(
+                java.nio.file.Path.of(storeDir)
+                        .toAbsolutePath()
+                        .normalize()
+                        .toUri()
+                        .toString()
+        );
 
         registry.addResourceHandler("/**")
                 .addResourceLocations(

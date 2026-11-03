@@ -24,4 +24,26 @@
     color: #555;
     text-align: justify;
     max-width: 800px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+
+}
+.search-logo {
+    width: 120px;
+    height: auto;
+}
+.search-field {
+    margin-top: 20px;
+    width: min(100%, 460px);
+    padding: 12px 14px;
+    border: 1px solid #65718c;
+    border-radius: 9px;
+}
+
+.search-field:focus-visible {
+    outline: 2px solid #5684ff;
+    outline-offset: 2px;
+}
+.catalog-toolbar {
+    justify-content:center;
 }

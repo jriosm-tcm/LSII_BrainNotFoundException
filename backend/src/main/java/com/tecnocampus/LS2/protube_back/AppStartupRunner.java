@@ -1,5 +1,6 @@
 package com.tecnocampus.LS2.protube_back;
 
+import com.tecnocampus.LS2.protube_back.application.services.UsersService;
 import com.tecnocampus.LS2.protube_back.application.services.VideoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -6,6 +6,7 @@ import './VideosPage.css';
 const VideosPage = () => {
   const { loading, message, value } = useAllVideos();
   const [query, setQuery] = useState('');
+  const [brokenThumbnails, setBrokenThumbnails] = useState<number[]>([]);
 
   useEffect(() => {
     document.title = 'ProTube - Videos';
@@ -58,10 +59,7 @@ const VideosPage = () => {
     return (
       <div>
         <div className="catalog-toolbar">
-          <img src="/protube-logo-removebg-preview.png"
-               alt="ProTube"
-               className="search-logo"
-          />
+          <img src="/protube-logo-removebg-preview.png" alt="ProTube" className="search-logo" />
           <input
             className="search-field"
             type="search"
@@ -85,11 +83,21 @@ const VideosPage = () => {
         <div className="video-grid">
           {filteredVideos.map((video) => (
             <a key={video.id} className="video-item" href={`/video/${video.id}`}>
-              <img
+              {video.thumbnailUrl && !brokenThumbnails.includes(video.id) ? (
+                <img
                   src={`${getEnv().MEDIA_BASE_URL}${video.thumbnailUrl}`}
-                alt={video.title}
-                className="video-thumbnail"
-              />
+                  alt={video.title}
+                  className="video-thumbnail"
+                  loading="lazy"
+                  onError={() =>
+                    setBrokenThumbnails((current) => (current.includes(video.id) ? current : [...current, video.id]))
+                  }
+                />
+              ) : (
+                <div className="video-placeholder" aria-hidden="true">
+                  ▶
+                </div>
+              )}
               <p className="video-title">{video.title}</p>
             </a>
           ))}
