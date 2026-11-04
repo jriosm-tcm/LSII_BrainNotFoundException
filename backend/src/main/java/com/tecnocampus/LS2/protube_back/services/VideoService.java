@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Locale;
 
 @Service
 public class VideoService {
@@ -21,6 +22,31 @@ public class VideoService {
     public VideoService(@Value("${pro_tube.store.dir}") String storeDir, ObjectMapper mapper) {
         this.store = Path.of(storeDir);
         this.mapper = mapper;
+    }
+
+    // Sprint 3 / US-08: search is executed by the backend, not the browser.
+    public List<Map<String, Object>> searchVideos(String query) {
+        String term = query == null ? "" : query.trim().toLowerCase(Locale.ROOT);
+        if (term.isEmpty()) return getVideos();
+
+        return getVideos().stream()
+                .map(video -> Map.entry(video, relevance(video, term)))
+                .filter(entry -> entry.getValue() > 0)
+                .sorted(Comparator.<Map.Entry<Map<String, Object>, Integer>>comparingInt(Map.Entry::getValue)
+                        .reversed()
+                        .thenComparing(entry -> String.valueOf(entry.getKey().get("title"))))
+                .map(Map.Entry::getKey)
+                .toList();
+    }
+
+    private int relevance(Map<String, Object> video, String term) {
+        String title = String.valueOf(video.get("title")).toLowerCase(Locale.ROOT);
+        String description = String.valueOf(video.get("description")).toLowerCase(Locale.ROOT);
+        String channel = String.valueOf(video.get("channel")).toLowerCase(Locale.ROOT);
+        if (title.equals(term)) return 4;
+        if (title.startsWith(term)) return 3;
+        if (title.contains(term)) return 2;
+        return description.contains(term) || channel.contains(term) ? 1 : 0;
     }
 
     public List<Map<String, Object>> getVideos() {
