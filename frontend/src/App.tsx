@@ -7,19 +7,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route
-          path="/"
-          element={
-            <>
-              <header className="App-header">
-                <img src="/protube-logo-removebg-preview.png" className="App-logo" alt="logo" />
-                <main>
-                  <button onClick={() => (window.location.href = '/videos')}>Ir a Videos</button>
-                </main>
-              </header>
-            </>
-          }
-        />
+        <Route path="/" element={<VideosPage />} />
         <Route path="/videos" element={<VideosPage />} />
         <Route path="/video/:id" element={<VideoDetailPage />} />
       </Routes>

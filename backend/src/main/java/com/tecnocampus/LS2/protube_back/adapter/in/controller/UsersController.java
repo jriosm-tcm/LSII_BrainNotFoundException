@@ -27,4 +27,7 @@ public class UsersController {
         UserResponse Response= userUseCase.createUser(request);
         return ResponseEntity.ok(Response);
     }
+
+    //login
+    //logout
 }

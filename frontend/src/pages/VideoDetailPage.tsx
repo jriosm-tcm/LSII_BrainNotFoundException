@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { useAllVideos } from '../useAllVideos';
 import { getEnv } from '../utils/Env';
+import { Link, useParams } from 'react-router-dom';
 import './VideoDetailPage.css';
 
 const VideoDetailPage = () => {
@@ -9,6 +9,7 @@ const VideoDetailPage = () => {
   const { loading, message, value } = useAllVideos();
   const [query, setQuery] = useState('');
   const [playbackError, setPlaybackError] = useState(false);
+
 
   useEffect(() => {
     document.title = 'ProTube - Detalle del Video';
@@ -40,7 +41,7 @@ const VideoDetailPage = () => {
     }
 
     return (
-      <div>
+      <div className="video-detail-page">
         <div className="catalog-toolbar">
           <img src="/protube-logo-removebg-preview.png" alt="ProTube" className="search-logo" />
           <input
@@ -54,6 +55,9 @@ const VideoDetailPage = () => {
         </div>
 
         <div className="video-detail">
+          <Link to="/videos" className="back-to-videos">
+            ← Volver a vídeos
+          </Link>
           <h1>{video.title}</h1>
           <video
             key={video.id}

@@ -6,6 +6,12 @@
     font-family: Arial, sans-serif;
 }
 
+.video-detail-page {
+    min-height: 100vh;
+    background-color: #171b24;
+    color: #f4f6fc;
+}
+
 .video-detail h1 {
     font-size: 2rem;
     margin-bottom: 20px;
@@ -21,7 +27,7 @@
 
 .video-description {
     font-size: 1rem;
-    color: #555;
+    color: #d0d7e6;
     text-align: justify;
     max-width: 800px;
     white-space: pre-wrap;
@@ -46,4 +52,20 @@
 }
 .catalog-toolbar {
     justify-content:center;
+}
+
+.back-to-videos {
+    display: inline-block;
+    align-self: flex-start;
+    margin-bottom: 16px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    background-color: #365ff5;
+    color: white;
+    text-decoration: none;
+}
+
+.back-to-videos:hover {
+    background-color: #294bc7;
+    color: white;
 }

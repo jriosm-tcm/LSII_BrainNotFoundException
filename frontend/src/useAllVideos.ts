@@ -13,27 +13,45 @@ export type Video = {
 type LoadingState = 'loading' | 'success' | 'error' | 'idle';
 
 const ALL_VIDEOS_URL = `${getEnv().API_BASE_URL}/videos`;
-export function useAllVideos() {
+export function useAllVideos(query = '') {
   const [value, setValue] = useState<Video[]>([]);
   const [message, setMessage] = useState<string>('Loading...');
   const [loading, setLoading] = useState<LoadingState>('idle');
 
   useEffect(() => {
-    const getVideos = async () => {
-      try {
+    const term = query.trim();
+    const controller = new AbortController();
+
+    const timeout = window.setTimeout(
+      async () => {
         setLoading('loading');
-        const response = await axios.get<Video[]>(ALL_VIDEOS_URL);
-        if (response.status === 200) {
+
+        try {
+          const url = term ? `${ALL_VIDEOS_URL}/search` : ALL_VIDEOS_URL;
+          const response = await axios.get<Video[]>(url, {
+            params: term ? { q: term } : undefined,
+            signal: controller.signal,
+          });
+
           setValue(response.data);
+          setLoading('success');
+        } catch (error: unknown) {
+          if (axios.isCancel(error)) {
+            return;
+          }
+
+          setMessage('Error al cargar los vídeos: ' + (error as AxiosError).message);
+          setLoading('error');
         }
-        setLoading('success');
-      } catch (error: unknown) {
-        setLoading('error');
-        setMessage('Error fetching videos: ' + (error as AxiosError).message);
-      }
+      },
+      term ? 250 : 0
+    );
+
+    return () => {
+      window.clearTimeout(timeout);
+      controller.abort();
     };
-    getVideos().then();
-  }, []);
+  }, [query]);
 
   return { value, message, loading };
 }
