@@ -29,3 +29,27 @@ html body { background-color: #171b24; color: #f4f6fc; }
 .App .catalog-toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 24px; }
 .App .catalog-toolbar p { margin: 0; color: #c4ccda; }
 .App .empty-state { padding: 24px; border: 1px dashed #65718c; border-radius: 12px; }
+
+/* Sprint 4: account and upload controls */
+.account-panel {
+  max-width: 720px;
+  margin: 1rem auto 1.5rem;
+  padding: 1rem;
+  border: 1px solid #384250;
+  border-radius: 12px;
+  background: #17202b;
+}
+.account-panel form { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; }
+.account-panel form h2 { width: 100%; font-size: 1.1rem; margin: 0; }
+.account-panel input, .account-panel textarea {
+  padding: .65rem;
+  border: 1px solid #566274;
+  border-radius: 6px;
+  background: #0d1420;
+  color: #fff;
+  min-width: 0;
+  flex: 1 1 220px;
+}
+.account-panel textarea { width: 100%; flex-basis: 100%; }
+.account-panel button { padding: .6rem .9rem; cursor: pointer; }
+.account-panel [role="alert"], .account-panel [role="status"] { width: 100%; }
