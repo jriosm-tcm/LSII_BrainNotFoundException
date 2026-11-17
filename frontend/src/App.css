@@ -53,3 +53,10 @@ html body { background-color: #171b24; color: #f4f6fc; }
 .account-panel textarea { width: 100%; flex-basis: 100%; }
 .account-panel button { padding: .6rem .9rem; cursor: pointer; }
 .account-panel [role="alert"], .account-panel [role="status"] { width: 100%; }
+
+.video-extras { margin-top: 2rem; border-top: 1px solid #445064; padding-top: 1rem; }
+.video-extras form { display: flex; flex-direction: column; gap: .7rem; margin: 1rem 0; }
+.video-extras textarea, .video-extras input { width: 100%; padding: .8rem; color: #fff; background: #202636; border: 1px solid #65718c; border-radius: 8px; }
+.video-extras button { align-self: flex-start; background: #365ff5; border: 0; border-radius: 8px; padding: .6rem 1rem; color: #fff; cursor: pointer; }
+.comment { padding: .9rem 0; border-bottom: 1px solid #3d4759; }
+.comment p { margin: .3rem 0; }
