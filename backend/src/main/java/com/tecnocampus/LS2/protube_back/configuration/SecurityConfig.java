@@ -34,7 +34,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/videos/**", "/media/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/videos/**", "/media/**", "/api/profile/*").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/videos/*/comments").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/profile/me", "/api/videos/*/metadata").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/videos/upload").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/auth/me").authenticated()
                         .requestMatchers("/api/**").authenticated()
@@ -46,7 +48,7 @@ public class SecurityConfig {
     @Bean CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOriginPatterns(List.of("http://localhost:5173", "http://127.0.0.1:5173"));
-        config.setAllowedMethods(List.of("GET", "POST", "OPTIONS"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/api/**", config);
