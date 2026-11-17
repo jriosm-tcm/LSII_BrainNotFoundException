@@ -96,6 +96,34 @@ public class VideoService {
         }
     }
 
+    public Map<String, Object> updateMetadata(String id, String owner, String title, String description) throws IOException {
+        if (id == null || !id.matches("[0-9]+")) throw new IllegalArgumentException("Invalid video ID");
+        if (title == null || title.isBlank() || title.length() > 200)
+            throw new IllegalArgumentException("Title is required (maximum 200 characters)");
+        if (description != null && description.length() > 5000)
+            throw new IllegalArgumentException("Description is too long");
+        Path path = store.resolve(id + ".json");
+        if (!Files.isRegularFile(path) || !Files.isRegularFile(store.resolve(id + ".mp4")))
+            throw new java.io.FileNotFoundException("Video not found");
+        JsonNode info = mapper.readTree(path.toFile());
+        if (!owner.equalsIgnoreCase(info.path("user").asText()))
+            throw new org.springframework.security.access.AccessDeniedException("Only the owner can edit this video");
+        var updated = info.deepCopy();
+        if (!(updated instanceof com.fasterxml.jackson.databind.node.ObjectNode object))
+            throw new IllegalArgumentException("Invalid metadata");
+        object.put("title", title.trim());
+        var meta = object.with("meta");
+        meta.put("description", description == null ? "" : description.trim());
+        Path temp = Files.createTempFile(store, "metadata-", ".tmp");
+        try {
+            mapper.writeValue(temp.toFile(), object);
+            Files.move(temp, path, StandardCopyOption.REPLACE_EXISTING);
+        } finally {
+            Files.deleteIfExists(temp);
+        }
+        return Map.of("id", id, "title", title.trim(), "description", description == null ? "" : description.trim());
+    }
+
     public List<Map<String, Object>> getVideos() {
         List<Map<String, Object>> videos = new ArrayList<>();
         if (!Files.isDirectory(store)) return videos;
