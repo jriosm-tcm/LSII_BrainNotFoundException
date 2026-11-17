@@ -11,11 +11,19 @@ public class AppUser {
     private String email;
     @Column(nullable = false)
     private String passwordHash;
+    @Column(nullable = false, length = 500)
+    private String description = "";
+    @Column(nullable = false, length = 500)
+    private String avatarUrl = "";
     protected AppUser() {}
     public AppUser(String email, String passwordHash) {
         this.email = email;
         this.passwordHash = passwordHash;
     }
+    public String getDescription() { return description; }
+    public String getAvatarUrl() { return avatarUrl; }
+    public void setDescription(String description) { this.description = description; }
+    public void setAvatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; }
     public String getEmail() { return email; }
     public String getPasswordHash() { return passwordHash; }
 }
