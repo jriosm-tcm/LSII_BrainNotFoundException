@@ -9,6 +9,14 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
 import java.io.IOException;
+import java.io.FileNotFoundException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,6 +39,25 @@ public class VideosController {
         try {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(videoService.uploadVideo(file, title, description, authentication.getName()));
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("error", ex.getMessage()));
+        }
+    }
+
+    public record MetadataUpdate(@NotBlank @Size(max = 200) String title,
+                                 @Size(max = 5000) String description) {}
+
+    @PutMapping("/{id}/metadata")
+    public ResponseEntity<?> updateMetadata(@PathVariable String id,
+                                            @Valid @RequestBody MetadataUpdate input,
+                                            Authentication authentication) throws IOException {
+        try {
+            return ResponseEntity.ok(videoService.updateMetadata(id, authentication.getName(),
+                    input.title(), input.description()));
+        } catch (FileNotFoundException ex) {
+            return ResponseEntity.notFound().build();
+        } catch (AccessDeniedException ex) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(java.util.Map.of("error", ex.getMessage()));
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.badRequest().body(java.util.Map.of("error", ex.getMessage()));
         }
