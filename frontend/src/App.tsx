@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import './App.css';
+import { ProfileEditor, VideoExtras } from './VideoExtras';
 import { useAllVideos, type Video } from './useAllVideos';
 import { getEnv } from './utils/Env';
 
@@ -79,6 +80,7 @@ function App() {
     <section className="account-panel" aria-label="Account">
       {auth ? <>
         <p>Signed in as {auth.email}</p>
+        <ProfileEditor auth={auth} />
         <button type="button" onClick={() => { setAuth(null); setUploadMessage(''); }}>Log out</button>
         <form onSubmit={upload}>
           <h2>Upload a video</h2>
@@ -116,6 +118,7 @@ function App() {
       <h2>{selected.title}</h2>
       <p>{selected.channel}</p>
       <p>{selected.description}</p>
+      <VideoExtras video={selected} auth={auth} onUpdated={setSelected} />
     </section>}
     {!selected && <>
       <div className="catalog-toolbar">
