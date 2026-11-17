@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import axios from 'axios';
 import './App.css';
 import { useAllVideos, type Video } from './useAllVideos';
 import { getEnv } from './utils/Env';
@@ -12,6 +13,58 @@ function App() {
   const [playbackError, setPlaybackError] = useState(false);
   const [brokenThumbnails, setBrokenThumbnails] = useState<string[]>([]);
 
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [auth, setAuth] = useState<{ email: string; header: string } | null>(null);
+  const [authMessage, setAuthMessage] = useState('');
+  const [registerMode, setRegisterMode] = useState(false);
+  const [uploadTitle, setUploadTitle] = useState('');
+  const [uploadDescription, setUploadDescription] = useState('');
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [uploadMessage, setUploadMessage] = useState('');
+
+  const authenticate = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setAuthMessage('');
+    const bytes = new TextEncoder().encode(email + ':' + password);
+    const header = 'Basic ' + btoa(Array.from(bytes, b => String.fromCharCode(b)).join(''));
+    try {
+      if (registerMode) await axios.post(getEnv().API_BASE_URL + '/auth/register', { email, password });
+      const response = await axios.get<{ email: string }>(getEnv().API_BASE_URL + '/auth/me', {
+        headers: { Authorization: header },
+      });
+      setAuth({ email: response.data.email, header });
+      setPassword('');
+    } catch (error) {
+      setAuthMessage(axios.isAxiosError(error)
+        ? (error.response?.data?.error || (error.response?.status === 401 ? 'Invalid email or password' : 'Unable to authenticate'))
+        : 'Unable to authenticate');
+    }
+  };
+
+  const upload = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!auth || !uploadFile) return;
+    setUploadMessage('Uploading...');
+    const form = new FormData();
+    form.append('file', uploadFile);
+    form.append('title', uploadTitle);
+    form.append('description', uploadDescription);
+    try {
+      await axios.post(getEnv().API_BASE_URL + '/videos/upload', form, {
+        headers: { Authorization: auth.header },
+      });
+      setUploadMessage('Video uploaded. Refresh the catalogue to see it.');
+      setUploadTitle('');
+      setUploadDescription('');
+      setUploadFile(null);
+    } catch (error) {
+      setUploadMessage(axios.isAxiosError(error)
+        ? (error.response?.data?.error || 'Upload failed') : 'Upload failed');
+    }
+  };
+
   const openVideo = (video: Video) => {
     setPlaybackError(false);
     setSelected(video);
@@ -22,6 +75,36 @@ function App() {
       <img src="/protube-logo-removebg-preview.png" alt="ProTube" />
       <h1>Discover videos</h1>
     </header>
+
+    <section className="account-panel" aria-label="Account">
+      {auth ? <>
+        <p>Signed in as {auth.email}</p>
+        <button type="button" onClick={() => { setAuth(null); setUploadMessage(''); }}>Log out</button>
+        <form onSubmit={upload}>
+          <h2>Upload a video</h2>
+          <input aria-label="Video title" placeholder="Video title" required maxLength={200}
+            value={uploadTitle} onChange={e => setUploadTitle(e.target.value)} />
+          <textarea aria-label="Video description" placeholder="Description" maxLength={5000}
+            value={uploadDescription} onChange={e => setUploadDescription(e.target.value)} />
+          <input aria-label="MP4 file" type="file" accept=".mp4,video/mp4" required
+            onChange={e => setUploadFile(e.target.files?.[0] ?? null)} />
+          <button type="submit" disabled={!uploadFile}>Upload MP4</button>
+          {uploadMessage && <p role="status">{uploadMessage}</p>}
+        </form>
+      </> : <form onSubmit={authenticate}>
+        <h2>{registerMode ? 'Create account' : 'Log in'}</h2>
+        <input type="email" aria-label="Email" placeholder="Email" autoComplete="username"
+          value={email} onChange={e => setEmail(e.target.value)} required />
+        <input type="password" aria-label="Password" placeholder="Password" minLength={registerMode ? 8 : undefined}
+          autoComplete={registerMode ? 'new-password' : 'current-password'}
+          value={password} onChange={e => setPassword(e.target.value)} required />
+        <button type="submit">{registerMode ? 'Register' : 'Log in'}</button>
+        <button type="button" onClick={() => { setRegisterMode(!registerMode); setAuthMessage(''); }}>
+          {registerMode ? 'Already registered? Log in' : 'Create an account'}
+        </button>
+        {authMessage && <p role="alert">{authMessage}</p>}
+      </form>}
+    </section>
     {loading === 'loading' && <p>Loading videos...</p>}
     {loading === 'error' && <p role="alert">{message}</p>}
     {loading === 'success' && value.length === 0 && !query.trim() && <p>No videos found. Add MP4 and JSON files using videoGrabber.</p>}
