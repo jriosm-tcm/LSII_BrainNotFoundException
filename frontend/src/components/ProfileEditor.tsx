@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getProfile, updateProfile, uploadAvatar } from '../api/profile';
 import type { Auth } from '../types';
+import { getEnv } from '../utils/Env';
 
 export function ProfileEditor({ auth }: { auth: Auth }) {
   const [description, setDescription] = useState('');
@@ -36,7 +37,7 @@ export function ProfileEditor({ auth }: { auth: Auth }) {
 
   return <form className="profile-form" onSubmit={save}>
     <div className="avatar-edit">
-      {avatarUrl ? <img src={avatarUrl} alt="Current avatar" /> : <span className="avatar-fallback">{auth.email[0].toUpperCase()}</span>}
+      {avatarUrl ? <img src={avatarUrl.startsWith("/api/") ? getEnv().API_BASE_URL.replace(/\/api$/, "") + avatarUrl : avatarUrl} alt="Current avatar" /> : <span className="avatar-fallback">{auth.email[0].toUpperCase()}</span>}
       <div><strong>Profile picture</strong><p>Upload a PNG or JPEG image (max 2 MB)</p>
         <input type="file" aria-label="Choose profile picture" accept="image/png,image/jpeg"
           onChange={e => setFile(e.target.files?.[0] ?? null)} />
