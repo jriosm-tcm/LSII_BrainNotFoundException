@@ -112,7 +112,7 @@ export function VideoExtras({ video, auth, onUpdated }: { video: Video; auth: Au
       <textarea required maxLength={2000} value={replyText} onChange={e => setReplyText(e.target.value)} />
       <button type="submit">Send reply</button>
       <button type="button" onClick={() => setReplyTo(null)}>Cancel</button>
-    </form>}}
+    </form>}
     {auth ? <form onSubmit={postComment}>
       <textarea aria-label="Write a comment" placeholder="Write a comment..." required maxLength={2000}
         value={content} onChange={e => setContent(e.target.value)} />
