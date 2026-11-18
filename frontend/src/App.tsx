@@ -138,7 +138,6 @@ function App() {
       <aside className="sidebar" aria-label="Navigation">
         <p className="sidebar-label">DISCOVER</p>
         <button className="nav-item active" type="button" onClick={() => { navigate('/'); setSelected(null); setQuery(''); }}>⌂ <span>Home</span></button>
-        <button className="nav-item" type="button" onClick={() => { navigate('/'); setSelected(null); document.querySelector<HTMLInputElement>('.header-search input')?.focus(); }}>⌕ <span>Explore</span></button>
         <div className="sidebar-divider" />
         <p className="sidebar-label">YOUR SPACE</p>
         <button className="nav-item" type="button" onClick={() => navigate(auth ? '/profile' : '/login')}>◉ <span>My profile</span></button>
