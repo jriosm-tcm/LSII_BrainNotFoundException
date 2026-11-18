@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import './App.css';
 import { ProfileEditor } from './components/ProfileEditor';
@@ -23,7 +23,10 @@ function App() {
   const [password, setPassword] = useState('');
   const [auth, setAuth] = useState<Auth | null>(null);
   const [authMessage, setAuthMessage] = useState('');
-  const [registerMode, setRegisterMode] = useState(false);
+  const [route, setRoute] = useState(window.location.pathname);
+  const registerMode = route === '/register';
+  const navigate = (path: string) => { window.history.pushState({}, '', path); setRoute(path); setAuthMessage(''); setAccountOpen(false); };
+  useEffect(() => { const onPopState = () => setRoute(window.location.pathname); window.addEventListener('popstate', onPopState); return () => window.removeEventListener('popstate', onPopState); }, []);
   const [uploadTitle, setUploadTitle] = useState('');
   const [uploadDescription, setUploadDescription] = useState('');
   const [uploadFile, setUploadFile] = useState<File | null>(null);
@@ -40,6 +43,7 @@ function App() {
       const response = await getCurrentUser(header);
       setAuth({ email: response.data.email, header });
       setPassword('');
+      navigate('/');
     } catch (error) {
       setAuthMessage(axios.isAxiosError(error)
         ? (error.response?.data?.error || (error.response?.status === 401 ? 'Invalid email or password' : 'Unable to authenticate'))
@@ -73,9 +77,32 @@ function App() {
     setSelected(video);
   };
 
+  if (route === '/login' || route === '/register') return <main className="auth-page">
+    <header className="auth-topbar"><button type="button" className="brand" onClick={() => navigate('/')}>
+      <span className="brand-symbol">▶</span><span>Pro<span className="brand-accent">Tube</span></span>
+    </button><button type="button" className="back-button" onClick={() => navigate('/')}>← Back to videos</button></header>
+    <section className="auth-card" aria-label={registerMode ? 'Registration' : 'Login'}>
+      <span className="eyebrow">WELCOME TO PROTUBE</span>
+      <h1>{registerMode ? 'Create your account' : 'Welcome back'}</h1>
+      <p>{registerMode ? 'Join ProTube and start sharing your videos.' : 'Log in to your account to continue.'}</p>
+      <form onSubmit={authenticate} className="auth-form">
+        <label htmlFor="auth-email">Email address</label>
+        <input id="auth-email" type="email" placeholder="you@example.com" autoComplete="username"
+          value={email} onChange={e => setEmail(e.target.value)} required />
+        <label htmlFor="auth-password">Password</label>
+        <input id="auth-password" type="password" placeholder={registerMode ? 'At least 8 characters' : 'Your password'}
+          minLength={registerMode ? 8 : undefined} autoComplete={registerMode ? 'new-password' : 'current-password'}
+          value={password} onChange={e => setPassword(e.target.value)} required />
+        {authMessage && <p role="alert" className="auth-error">{authMessage}</p>}
+        <button type="submit" className="auth-submit">{registerMode ? 'Create account' : 'Log in'}</button>
+      </form>
+      <p className="auth-switch">{registerMode ? 'Already have an account?' : "Don't have an account?"} <button type="button" onClick={() => navigate(registerMode ? '/login' : '/register')}>{registerMode ? 'Log in' : 'Sign up'}</button></p>
+    </section>
+  </main>;
+
   return <main className="App">
     <header className="site-header">
-      <button type="button" className="brand" onClick={() => { setSelected(null); setQuery(''); }} aria-label="ProTube home">
+      <button type="button" className="brand" onClick={() => { navigate('/'); setSelected(null); setQuery(''); }} aria-label="ProTube home">
         <span className="brand-symbol">▶</span><span>Pro<span className="brand-accent">Tube</span></span>
       </button>
       <div className="header-search"><span aria-hidden="true">⌕</span>
@@ -85,7 +112,7 @@ function App() {
       </div>
       <div className="header-actions">
         {auth && <span className="user-chip">{auth.email.slice(0, 1).toUpperCase()}</span>}
-        <button type="button" className="account-toggle" onClick={() => setAccountOpen(!accountOpen)}>
+        <button type="button" className="account-toggle" onClick={() => auth ? setAccountOpen(!accountOpen) : navigate('/login')}>
           {auth ? 'My account' : 'Log in / Sign up'} <span aria-hidden="true">{accountOpen ? '⌃' : '⌄'}</span>
         </button>
       </div>
@@ -97,8 +124,8 @@ function App() {
         <button className="nav-item" type="button" onClick={() => { setSelected(null); document.querySelector<HTMLInputElement>('.header-search input')?.focus(); }}>⌕ <span>Explore</span></button>
         <div className="sidebar-divider" />
         <p className="sidebar-label">YOUR SPACE</p>
-        <button className="nav-item" type="button" onClick={() => setAccountOpen(true)}>◉ <span>My profile</span></button>
-        <button className="nav-item" type="button" onClick={() => setAccountOpen(true)}>＋ <span>Upload video</span></button>
+        <button className="nav-item" type="button" onClick={() => auth ? setAccountOpen(true) : navigate('/login')}>◉ <span>My profile</span></button>
+        <button className="nav-item" type="button" onClick={() => auth ? setAccountOpen(true) : navigate('/login')}>＋ <span>Upload video</span></button>
         <div className="sidebar-footer">ProTube · Video platform</div>
       </aside>
       <div className="content-area">
@@ -121,19 +148,7 @@ function App() {
               <button type="submit" disabled={!uploadFile}>Upload MP4</button>
               {uploadMessage && <p role="status">{uploadMessage}</p>}
             </form>
-          </> : <form onSubmit={authenticate} className="auth-form">
-            <h2>{registerMode ? 'Create your account' : 'Log in'}</h2>
-            <input type="email" aria-label="Email" placeholder="Email" autoComplete="username"
-              value={email} onChange={e => setEmail(e.target.value)} required />
-            <input type="password" aria-label="Password" placeholder="Password" minLength={registerMode ? 8 : undefined}
-              autoComplete={registerMode ? 'new-password' : 'current-password'}
-              value={password} onChange={e => setPassword(e.target.value)} required />
-            <button type="submit">{registerMode ? 'Register' : 'Log in'}</button>
-            <button type="button" className="secondary-button" onClick={() => { setRegisterMode(!registerMode); setAuthMessage(''); }}>
-              {registerMode ? 'Already registered? Log in' : 'Create an account'}
-            </button>
-            {authMessage && <p role="alert">{authMessage}</p>}
-          </form>}
+          </> : null}
         </section>}
         {loading === 'loading' && <p className="loading-state">Loading videos...</p>}
         {loading === 'error' && <p role="alert">{message}</p>}
