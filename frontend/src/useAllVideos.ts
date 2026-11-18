@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import axios, { AxiosError } from 'axios';
-import { getEnv } from './utils/Env';
+import { getVideos } from './api/videos';
+import type { Video } from './types';
 
-export type Video = { id: string; title: string; description: string; channel: string; videoUrl: string; thumbnailUrl: string };
+export type { Video } from './types';
 
 type LoadingState = 'loading' | 'success' | 'error' | 'idle';
 
-const ALL_VIDEOS_URL = `${getEnv().API_BASE_URL}/videos`;
 export function useAllVideos(query: string = '') {
   const [value, setValue] = useState<Video[]>([]);
   const [message, setMessage] = useState<string>('Loading...');
@@ -18,11 +18,7 @@ export function useAllVideos(query: string = '') {
       try {
         setLoading('loading');
         const term = query.trim();
-        const url = term ? `${ALL_VIDEOS_URL}/search` : ALL_VIDEOS_URL;
-        const response = await axios.get<Video[]>(url, {
-          params: term ? { q: term } : undefined,
-          signal: controller.signal,
-        });
+        const response = await getVideos(term, controller.signal);
         setValue(response.data);
         setLoading('success');
       } catch (error: unknown) {
