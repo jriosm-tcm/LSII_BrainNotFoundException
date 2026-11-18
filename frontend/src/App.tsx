@@ -27,6 +27,7 @@ function App() {
   const [uploadDescription, setUploadDescription] = useState('');
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [uploadMessage, setUploadMessage] = useState('');
+  const [accountOpen, setAccountOpen] = useState(false);
 
   const authenticate = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -73,59 +74,12 @@ function App() {
 
   return <main className="App">
     <header className="site-header">
-      <img src="/protube-logo-removebg-preview.png" alt="ProTube" />
-      <h1>Discover videos</h1>
-    </header>
-
-    <section className="account-panel" aria-label="Account">
-      {auth ? <>
-        <p>Signed in as {auth.email}</p>
-        <ProfileEditor auth={auth} />
-        <button type="button" onClick={() => { setAuth(null); setUploadMessage(''); }}>Log out</button>
-        <form onSubmit={upload}>
-          <h2>Upload a video</h2>
-          <input aria-label="Video title" placeholder="Video title" required maxLength={200}
-            value={uploadTitle} onChange={e => setUploadTitle(e.target.value)} />
-          <textarea aria-label="Video description" placeholder="Description" maxLength={5000}
-            value={uploadDescription} onChange={e => setUploadDescription(e.target.value)} />
-          <input aria-label="MP4 file" type="file" accept=".mp4,video/mp4" required
-            onChange={e => setUploadFile(e.target.files?.[0] ?? null)} />
-          <button type="submit" disabled={!uploadFile}>Upload MP4</button>
-          {uploadMessage && <p role="status">{uploadMessage}</p>}
-        </form>
-      </> : <form onSubmit={authenticate}>
-        <h2>{registerMode ? 'Create account' : 'Log in'}</h2>
-        <input type="email" aria-label="Email" placeholder="Email" autoComplete="username"
-          value={email} onChange={e => setEmail(e.target.value)} required />
-        <input type="password" aria-label="Password" placeholder="Password" minLength={registerMode ? 8 : undefined}
-          autoComplete={registerMode ? 'new-password' : 'current-password'}
-          value={password} onChange={e => setPassword(e.target.value)} required />
-        <button type="submit">{registerMode ? 'Register' : 'Log in'}</button>
-        <button type="button" onClick={() => { setRegisterMode(!registerMode); setAuthMessage(''); }}>
-          {registerMode ? 'Already registered? Log in' : 'Create an account'}
-        </button>
-        {authMessage && <p role="alert">{authMessage}</p>}
-      </form>}
-    </section>
-    {loading === 'loading' && <p>Loading videos...</p>}
-    {loading === 'error' && <p role="alert">{message}</p>}
-    {loading === 'success' && value.length === 0 && !query.trim() && <p>No videos found. Add MP4 and JSON files using videoGrabber.</p>}
-    {selected && <section className="player-section">
-      <button type="button" onClick={() => setSelected(null)}>← Back to videos</button>
-      <video key={selected.id} controls autoPlay poster={mediaUrl(selected.thumbnailUrl)}
-        src={mediaUrl(selected.videoUrl)} onError={() => setPlaybackError(true)} />
-      {playbackError && <p role="alert">This video could not be played. Check the MP4 file and its codec.</p>}
-      <h2>{selected.title}</h2>
-      <p>{selected.channel}</p>
-      <p>{selected.description}</p>
-      <VideoExtras video={selected} auth={auth} onUpdated={setSelected} />
-    </section>}
-    {!selected && <>
-      <div className="catalog-toolbar">
-        <input className="search-field" type="search" value={query}
-          onChange={event => setQuery(event.target.value)}
-          placeholder="Search by title, description or channel..."
-          aria-label="Search videos" />
+      <button type="button" className="brand" onClick={() => { setSelected(null); setQuery(''); }} aria-label="ProTube home">
+        <span className="brand-symbol">▶</span><span>Pro<span className="brand-accent">Tube</span></span>
+      </button>
+      <div className="header-search">
+        <span aria-hidden="true">⌕</span>
+        <span className="section-title">Latest uploads</span>
         <p>{value.length} {value.length === 1 ? 'video' : 'videos'}</p>
       </div>
       {loading === 'success' && query.trim() && value.length === 0 &&
@@ -136,11 +90,12 @@ function App() {
             ? <img src={mediaUrl(video.thumbnailUrl)} alt="" loading="lazy"
                 onError={() => setBrokenThumbnails(current => current.includes(video.id) ? current : [...current, video.id])} />
             : <div className="placeholder" aria-hidden="true">▶</div>}
-          <strong>{video.title}</strong>
-          <span>{video.channel}</span>
+          <div className="video-card-info"><span className="creator-avatar">{video.channel.slice(0, 1).toUpperCase()}</span><div className="video-card-text"><strong>{video.title}</strong><span>{video.channel}</span></div></div>
         </button>)}
       </section>
     </>}
+      </div>
+    </div>
   </main>;
 }
 
