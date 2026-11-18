@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/profile/me").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/profile/me", "/api/videos/mine").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/profile/avatar/*").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/profile/me/avatar").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/videos/**", "/media/**", "/api/profile/*").permitAll()
