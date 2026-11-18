@@ -5,4 +5,5 @@ import java.util.List;
 
 public interface VideoCommentRepository extends JpaRepository<VideoComment, Long> {
     List<VideoComment> findByVideoIdOrderByCreatedAtAsc(String videoId);
+    long countByVideoId(String videoId);
 }
