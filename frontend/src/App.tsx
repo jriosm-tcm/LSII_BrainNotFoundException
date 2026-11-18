@@ -6,7 +6,7 @@ import { VideoExtras } from './components/VideoExtras';
 import { useAllVideos } from './useAllVideos';
 import type { Video, Auth } from './types';
 import { register, getCurrentUser } from './api/auth';
-import { uploadVideo, trackVideoOpen } from './api/videos';
+import { uploadVideo, trackVideoOpen, getMyVideos } from './api/videos';
 import { getEnv } from './utils/Env';
 
 const mediaUrl = (path: string) => path ? new URL(path, getEnv().MEDIA_BASE_URL + '/').toString() : '';
@@ -25,13 +25,19 @@ function App() {
   const [authMessage, setAuthMessage] = useState('');
   const [route, setRoute] = useState(window.location.pathname);
   const registerMode = route === '/register';
-  const navigate = (path: string) => { window.history.pushState({}, '', path); setRoute(path); setAuthMessage(''); setAccountOpen(false); };
+  const navigate = (path: string) => { window.history.pushState({}, '', path); setRoute(path); setAuthMessage('');  };
   useEffect(() => { const onPopState = () => setRoute(window.location.pathname); window.addEventListener('popstate', onPopState); return () => window.removeEventListener('popstate', onPopState); }, []);
   const [uploadTitle, setUploadTitle] = useState('');
   const [uploadDescription, setUploadDescription] = useState('');
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [uploadMessage, setUploadMessage] = useState('');
-  const [accountOpen, setAccountOpen] = useState(false);
+  const [myVideos, setMyVideos] = useState<Video[]>([]);
+  const [myVideosMessage, setMyVideosMessage] = useState('');
+  useEffect(() => {
+    if (route !== '/my-videos' || !auth) return;
+    getMyVideos(auth.header).then(response => { setMyVideos(response.data); setMyVideosMessage(''); })
+      .catch(() => setMyVideosMessage('Could not load your videos'));
+  }, [route, auth]);
 
   const authenticate = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -61,10 +67,11 @@ function App() {
     form.append('description', uploadDescription);
     try {
       await uploadVideo(form, auth.header);
-      setUploadMessage('Video uploaded. Refresh the catalogue to see it.');
+      setUploadMessage('Video uploaded successfully.');
       setUploadTitle('');
       setUploadDescription('');
       setUploadFile(null);
+      navigate('/my-videos');
     } catch (error) {
       setUploadMessage(axios.isAxiosError(error)
         ? (error.response?.data?.error || 'Upload failed') : 'Upload failed');
@@ -107,49 +114,70 @@ function App() {
       </button>
       <div className="header-search"><span aria-hidden="true">⌕</span>
         <input className="search-field" type="search" value={query}
-          onChange={event => { setQuery(event.target.value); setSelected(null); }}
+          onChange={event => { setQuery(event.target.value); setSelected(null); navigate('/'); }}
           placeholder="Search videos, creators..." aria-label="Search videos" />
       </div>
       <div className="header-actions">
         {auth && <span className="user-chip">{auth.email.slice(0, 1).toUpperCase()}</span>}
-        <button type="button" className="account-toggle" onClick={() => auth ? setAccountOpen(!accountOpen) : navigate('/login')}>
-          {auth ? 'My account' : 'Log in / Sign up'} <span aria-hidden="true">{accountOpen ? '⌃' : '⌄'}</span>
+        <button type="button" className="account-toggle" onClick={() => navigate(auth ? '/profile' : '/login')}>
+          {auth ? 'My account' : 'Log in / Sign up'} <span aria-hidden="true">⌄</span>
         </button>
       </div>
     </header>
     <div className="app-layout">
       <aside className="sidebar" aria-label="Navigation">
         <p className="sidebar-label">DISCOVER</p>
-        <button className="nav-item active" type="button" onClick={() => { setSelected(null); setQuery(''); }}>⌂ <span>Home</span></button>
-        <button className="nav-item" type="button" onClick={() => { setSelected(null); document.querySelector<HTMLInputElement>('.header-search input')?.focus(); }}>⌕ <span>Explore</span></button>
+        <button className="nav-item active" type="button" onClick={() => { navigate('/'); setSelected(null); setQuery(''); }}>⌂ <span>Home</span></button>
+        <button className="nav-item" type="button" onClick={() => { navigate('/'); setSelected(null); document.querySelector<HTMLInputElement>('.header-search input')?.focus(); }}>⌕ <span>Explore</span></button>
         <div className="sidebar-divider" />
         <p className="sidebar-label">YOUR SPACE</p>
-        <button className="nav-item" type="button" onClick={() => auth ? setAccountOpen(true) : navigate('/login')}>◉ <span>My profile</span></button>
-        <button className="nav-item" type="button" onClick={() => auth ? setAccountOpen(true) : navigate('/login')}>＋ <span>Upload video</span></button>
+        <button className="nav-item" type="button" onClick={() => navigate(auth ? '/profile' : '/login')}>◉ <span>My profile</span></button>
+        <button className="nav-item" type="button" onClick={() => navigate(auth ? '/upload' : '/login')}>＋ <span>Upload video</span></button>
+        <button className="nav-item" type="button" onClick={() => navigate(auth ? '/my-videos' : '/login')}>▣ <span>My videos</span></button>
         <div className="sidebar-footer">ProTube · Video platform</div>
       </aside>
       <div className="content-area">
-        {accountOpen && <section className="account-panel" aria-label="Account">
-          <div className="panel-heading"><h2>{auth ? 'Your account' : 'Welcome to ProTube'}</h2>
-            <button type="button" className="close-panel" onClick={() => setAccountOpen(false)} aria-label="Close account panel">✕</button>
-          </div>
-          {auth ? <>
-            <p className="signed-in">Signed in as <strong>{auth.email}</strong></p>
+        {route === '/profile' && auth && <section className="dashboard-page">
+          <span className="eyebrow">YOUR SPACE</span><h1>My profile</h1>
+          <p className="dashboard-subtitle">Manage your public profile and picture.</p>
+          <div className="dashboard-card"><p className="signed-in">Signed in as <strong>{auth.email}</strong></p>
             <ProfileEditor auth={auth} />
-            <button type="button" className="secondary-button" onClick={() => { setAuth(null); setUploadMessage(''); }}>Log out</button>
-            <form onSubmit={upload} className="upload-form">
-              <h2>Upload a video</h2>
-              <input aria-label="Video title" placeholder="Video title" required maxLength={200}
-                value={uploadTitle} onChange={e => setUploadTitle(e.target.value)} />
-              <textarea aria-label="Video description" placeholder="Description" maxLength={5000}
-                value={uploadDescription} onChange={e => setUploadDescription(e.target.value)} />
-              <input aria-label="MP4 file" type="file" accept=".mp4,video/mp4" required
-                onChange={e => setUploadFile(e.target.files?.[0] ?? null)} />
-              <button type="submit" disabled={!uploadFile}>Upload MP4</button>
-              {uploadMessage && <p role="status">{uploadMessage}</p>}
-            </form>
-          </> : null}
+            <button type="button" className="secondary-button" onClick={() => { setAuth(null); navigate('/'); }}>Log out</button>
+          </div>
         </section>}
+        {route === '/upload' && auth && <section className="dashboard-page">
+          <span className="eyebrow">CREATOR STUDIO</span><h1>Upload video</h1>
+          <p className="dashboard-subtitle">Share something new with your audience.</p>
+          <div className="dashboard-card"><form onSubmit={upload} className="upload-form">
+            <label htmlFor="video-title">Title</label>
+            <input id="video-title" placeholder="Give your video a title" required maxLength={200}
+              value={uploadTitle} onChange={e => setUploadTitle(e.target.value)} />
+            <label htmlFor="video-description">Description</label>
+            <textarea id="video-description" placeholder="What's your video about?" maxLength={5000}
+              value={uploadDescription} onChange={e => setUploadDescription(e.target.value)} />
+            <label htmlFor="video-file">Video file (MP4, up to 100 MB)</label>
+            <input id="video-file" type="file" accept=".mp4,video/mp4" required
+              onChange={e => setUploadFile(e.target.files?.[0] ?? null)} />
+            <button type="submit" disabled={!uploadFile}>Publish video</button>
+            {uploadMessage && <p role="status">{uploadMessage}</p>}
+          </form></div>
+        </section>}
+        {route === '/my-videos' && auth && <section className="dashboard-page">
+          <span className="eyebrow">CREATOR STUDIO</span><h1>My videos</h1>
+          <p className="dashboard-subtitle">All the videos you've uploaded.</p>
+          {myVideosMessage && <p role="alert">{myVideosMessage}</p>}
+          {!myVideosMessage && myVideos.length === 0 && <p className="empty-state">You haven't uploaded any videos yet.</p>}
+          <section className="video-grid">
+            {myVideos.map(video => <button type="button" className="video-card" key={video.id}
+              onClick={() => { setSelected(video); navigate('/'); }}>
+              {video.thumbnailUrl ? <img src={mediaUrl(video.thumbnailUrl)} alt="" /> : <div className="placeholder">▶</div>}
+              <div className="video-card-info"><span className="creator-avatar">{video.channel[0]?.toUpperCase()}</span>
+                <div className="video-card-text"><strong>{video.title}</strong><span>{video.channel}</span></div></div>
+            </button>)}
+          </section>
+          <button type="button" className="studio-link" onClick={() => navigate('/upload')}>＋ Upload another video</button>
+        </section>}
+        {route === '/' && <>
         {loading === 'loading' && <p className="loading-state">Loading videos...</p>}
         {loading === 'error' && <p role="alert">{message}</p>}
         {loading === 'success' && value.length === 0 && !query.trim() && <p className="empty-state">No videos yet. Upload your first video to get started.</p>}
@@ -175,6 +203,7 @@ function App() {
               <div className="video-card-info"><span className="creator-avatar">{video.channel.slice(0, 1).toUpperCase()}</span><div className="video-card-text"><strong>{video.title}</strong><span>{video.channel}</span></div></div>
             </button>)}
           </section>
+        </>}
         </>}
       </div>
     </div>
