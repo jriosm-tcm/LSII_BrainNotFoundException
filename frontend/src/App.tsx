@@ -128,7 +128,7 @@ function App() {
           placeholder="Search videos, creators..." aria-label="Search videos" />
       </div>
       <div className="header-actions">
-        {auth && <span className="user-chip">{headerAvatar ? <img className="header-avatar" src={headerAvatar.startsWith('/api/') ? getEnv().API_BASE_URL.replace(/\\/api$/, '') + headerAvatar : headerAvatar} alt="Your profile picture" onError={() => setHeaderAvatar('')} /> : auth.email.slice(0, 1).toUpperCase()}</span>}
+        {auth && <span className="user-chip">{headerAvatar ? <img className="header-avatar" src={headerAvatar.startsWith('/api/') ? getEnv().API_BASE_URL.slice(0, -4) + headerAvatar : headerAvatar} alt="Your profile picture" onError={() => setHeaderAvatar('')} /> : auth.email.slice(0, 1).toUpperCase()}</span>}
         <button type="button" className="account-toggle" onClick={() => navigate(auth ? '/profile' : '/login')}>
           {auth ? 'My account' : 'Log in / Sign up'} <span aria-hidden="true">⌄</span>
         </button>
