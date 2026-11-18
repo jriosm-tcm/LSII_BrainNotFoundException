@@ -124,6 +124,12 @@ public class VideoService {
         return Map.of("id", id, "title", title.trim(), "description", description == null ? "" : description.trim());
     }
 
+    public List<Map<String, Object>> getVideosByOwner(String email) {
+        return getVideos().stream()
+                .filter(video -> email.equalsIgnoreCase(String.valueOf(video.get("channel"))))
+                .toList();
+    }
+
     public List<Map<String, Object>> getVideos() {
         List<Map<String, Object>> videos = new ArrayList<>();
         if (!Files.isDirectory(store)) return videos;
