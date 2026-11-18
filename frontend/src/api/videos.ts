@@ -9,3 +9,5 @@ export const editVideo = (id: string, title: string, description: string, header
   api.put(videoPath(id) + '/metadata', { title, description }, { headers: authHeaders(header) });
 export const getVideoStats = (id: string) => api.get<VideoStats>(videoPath(id) + '/stats');
 export const trackVideoOpen = (id: string) => api.post(videoPath(id) + '/stats/view');
+
+export const getMyVideos = (header: string) => api.get<Video[]>('/videos/mine', { headers: authHeaders(header) });
