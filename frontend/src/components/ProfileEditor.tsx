@@ -1,30 +1,51 @@
 import { useEffect, useState } from 'react';
-import { getProfile, updateProfile } from '../api/profile';
+import { getProfile, updateProfile, uploadAvatar } from '../api/profile';
 import type { Auth } from '../types';
 
 export function ProfileEditor({ auth }: { auth: Auth }) {
   const [description, setDescription] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
+  const [file, setFile] = useState<File | null>(null);
   const [message, setMessage] = useState('');
+  const [saving, setSaving] = useState(false);
+
   useEffect(() => {
-    getProfile(auth.header)
-      .then(response => { setDescription(response.data.description); setAvatarUrl(response.data.avatarUrl); })
-      .catch(() => setMessage('Could not load profile'));
+    getProfile(auth.header).then(response => {
+      setDescription(response.data.description);
+      setAvatarUrl(response.data.avatarUrl);
+    }).catch(() => setMessage('Could not load profile'));
   }, [auth.header]);
+
   const save = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setSaving(true);
+    setMessage('');
     try {
-      await updateProfile({ description, avatarUrl }, auth.header);
-      setMessage('Profile saved');
-    } catch { setMessage('Could not save profile'); }
+      let nextAvatar = avatarUrl;
+      if (file) {
+        const uploaded = await uploadAvatar(file, auth.header);
+        nextAvatar = uploaded.data.avatarUrl;
+        setAvatarUrl(nextAvatar);
+        setFile(null);
+      }
+      await updateProfile({ description, avatarUrl: nextAvatar }, auth.header);
+      setMessage('Profile saved successfully');
+    } catch { setMessage('Could not save profile. Use a PNG or JPEG under 2 MB.'); }
+    finally { setSaving(false); }
   };
-  return <form onSubmit={save}>
-    <h2>Your profile</h2>
-    <textarea aria-label="Profile description" maxLength={500} placeholder="About you"
+
+  return <form className="profile-form" onSubmit={save}>
+    <div className="avatar-edit">
+      {avatarUrl ? <img src={avatarUrl} alt="Current avatar" /> : <span className="avatar-fallback">{auth.email[0].toUpperCase()}</span>}
+      <div><strong>Profile picture</strong><p>Upload a PNG or JPEG image (max 2 MB)</p>
+        <input type="file" aria-label="Choose profile picture" accept="image/png,image/jpeg"
+          onChange={e => setFile(e.target.files?.[0] ?? null)} />
+      </div>
+    </div>
+    <label htmlFor="profile-description">About you</label>
+    <textarea id="profile-description" maxLength={500} placeholder="Tell others about yourself"
       value={description} onChange={e => setDescription(e.target.value)} />
-    <input aria-label="Avatar URL" type="url" maxLength={500} placeholder="Avatar image URL"
-      value={avatarUrl} onChange={e => setAvatarUrl(e.target.value)} />
-    <button type="submit">Save profile</button>
+    <button type="submit" disabled={saving}>{saving ? 'Saving...' : 'Save changes'}</button>
     {message && <p role="status">{message}</p>}
   </form>;
 }
