@@ -3,7 +3,7 @@ import { getProfile, updateProfile, uploadAvatar } from '../api/profile';
 import type { Auth } from '../types';
 import { getEnv } from '../utils/Env';
 
-export function ProfileEditor({ auth }: { auth: Auth }) {
+export function ProfileEditor({ auth, onAvatarChange }: { auth: Auth; onAvatarChange?: (avatarUrl: string) => void }) {
   const [description, setDescription] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
   const [file, setFile] = useState<File | null>(null);
@@ -30,6 +30,7 @@ export function ProfileEditor({ auth }: { auth: Auth }) {
         setFile(null);
       }
       await updateProfile({ description, avatarUrl: nextAvatar }, auth.header);
+      onAvatarChange?.(nextAvatar);
       setMessage('Profile saved successfully');
     } catch { setMessage('Could not save profile. Use a PNG or JPEG under 2 MB.'); }
     finally { setSaving(false); }
