@@ -8,6 +8,7 @@ import type { Video, Auth } from './types';
 import { register, getCurrentUser } from './api/auth';
 import { uploadVideo, trackVideoOpen, getMyVideos } from './api/videos';
 import { getEnv } from './utils/Env';
+import { getProfile } from './api/profile';
 
 const mediaUrl = (path: string) => path ? new URL(path, getEnv().MEDIA_BASE_URL + '/').toString() : '';
 
@@ -22,6 +23,15 @@ function App() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [auth, setAuth] = useState<Auth | null>(null);
+  const [headerAvatar, setHeaderAvatar] = useState('');
+  useEffect(() => {
+    if (!auth) { setHeaderAvatar(''); return; }
+    let active = true;
+    getProfile(auth.header).then(response => {
+      if (active) setHeaderAvatar(response.data.avatarUrl || '');
+    }).catch(() => { if (active) setHeaderAvatar(''); });
+    return () => { active = false; };
+  }, [auth]);
   const [authMessage, setAuthMessage] = useState('');
   const [route, setRoute] = useState(window.location.pathname);
   const registerMode = route === '/register';
@@ -118,7 +128,7 @@ function App() {
           placeholder="Search videos, creators..." aria-label="Search videos" />
       </div>
       <div className="header-actions">
-        {auth && <span className="user-chip">{auth.email.slice(0, 1).toUpperCase()}</span>}
+        {auth && <span className="user-chip">{headerAvatar ? <img className="header-avatar" src={headerAvatar.startsWith('/api/') ? getEnv().API_BASE_URL.replace(/\\/api$/, '') + headerAvatar : headerAvatar} alt="Your profile picture" onError={() => setHeaderAvatar('')} /> : auth.email.slice(0, 1).toUpperCase()}</span>}
         <button type="button" className="account-toggle" onClick={() => navigate(auth ? '/profile' : '/login')}>
           {auth ? 'My account' : 'Log in / Sign up'} <span aria-hidden="true">⌄</span>
         </button>
@@ -141,7 +151,7 @@ function App() {
           <span className="eyebrow">YOUR SPACE</span><h1>My profile</h1>
           <p className="dashboard-subtitle">Manage your public profile and picture.</p>
           <div className="dashboard-card"><p className="signed-in">Signed in as <strong>{auth.email}</strong></p>
-            <ProfileEditor auth={auth} />
+            <ProfileEditor auth={auth} onAvatarChange={setHeaderAvatar} />
             <button type="button" className="secondary-button" onClick={() => { setAuth(null); navigate('/'); }}>Log out</button>
           </div>
         </section>}
