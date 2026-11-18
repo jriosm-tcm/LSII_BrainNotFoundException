@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import axios from 'axios';
 import './App.css';
-import { ProfileEditor, VideoExtras } from './VideoExtras';
-import { useAllVideos, type Video } from './useAllVideos';
+import { ProfileEditor } from './components/ProfileEditor';
+import { VideoExtras } from './components/VideoExtras';
+import { useAllVideos } from './useAllVideos';
+import type { Video, Auth } from './types';
+import { register, getCurrentUser } from './api/auth';
+import { uploadVideo, trackVideoOpen } from './api/videos';
 import { getEnv } from './utils/Env';
 
 const mediaUrl = (path: string) => path ? new URL(path, getEnv().API_BASE_URL).toString() : '';
@@ -17,7 +21,7 @@ function App() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [auth, setAuth] = useState<{ email: string; header: string } | null>(null);
+  const [auth, setAuth] = useState<Auth | null>(null);
   const [authMessage, setAuthMessage] = useState('');
   const [registerMode, setRegisterMode] = useState(false);
   const [uploadTitle, setUploadTitle] = useState('');
@@ -31,10 +35,8 @@ function App() {
     const bytes = new TextEncoder().encode(email + ':' + password);
     const header = 'Basic ' + btoa(Array.from(bytes, b => String.fromCharCode(b)).join(''));
     try {
-      if (registerMode) await axios.post(getEnv().API_BASE_URL + '/auth/register', { email, password });
-      const response = await axios.get<{ email: string }>(getEnv().API_BASE_URL + '/auth/me', {
-        headers: { Authorization: header },
-      });
+      if (registerMode) await register(email, password);
+      const response = await getCurrentUser(header);
       setAuth({ email: response.data.email, header });
       setPassword('');
     } catch (error) {
@@ -53,9 +55,7 @@ function App() {
     form.append('title', uploadTitle);
     form.append('description', uploadDescription);
     try {
-      await axios.post(getEnv().API_BASE_URL + '/videos/upload', form, {
-        headers: { Authorization: auth.header },
-      });
+      await uploadVideo(form, auth.header);
       setUploadMessage('Video uploaded. Refresh the catalogue to see it.');
       setUploadTitle('');
       setUploadDescription('');
@@ -67,7 +67,7 @@ function App() {
   };
 
   const openVideo = (video: Video) => {
-    void axios.post(getEnv().API_BASE_URL + '/videos/' + encodeURIComponent(video.id) + '/stats/view').catch(() => {});
+    void trackVideoOpen(video.id).catch(() => {});
     setPlaybackError(false);
     setSelected(video);
   };
