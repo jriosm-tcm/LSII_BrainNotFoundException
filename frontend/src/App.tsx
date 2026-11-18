@@ -9,7 +9,7 @@ import { register, getCurrentUser } from './api/auth';
 import { uploadVideo, trackVideoOpen } from './api/videos';
 import { getEnv } from './utils/Env';
 
-const mediaUrl = (path: string) => path ? new URL(path, getEnv().API_BASE_URL).toString() : '';
+const mediaUrl = (path: string) => path ? new URL(path, window.location.origin).toString() : '';
 
 function App() {
   const [query, setQuery] = useState('');
