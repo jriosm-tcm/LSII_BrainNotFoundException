@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getComments, postComment, postReply, getLikes, toggleLike } from '../api/comments';
+import { getComments, postComment as createComment, postReply, getLikes, toggleLike as updateLike } from '../api/comments';
 import { getVideoStats, editVideo } from '../api/videos';
 import type { Auth, Video, VideoComment as Comment, VideoStats } from '../types';
 
@@ -51,7 +51,7 @@ export function VideoExtras({ video, auth, onUpdated }: { video: Video; auth: Au
   const toggleLike = async (id: number) => {
     if (!auth) return;
     try {
-      const response = await toggleLike(video.id, id, auth.header);
+      const response = await updateLike(video.id, id, auth.header);
       setLikes(current => ({ ...current, [id]: response.data.likes }));
     } catch { setMessage('Could not update like'); }
   };
@@ -60,7 +60,7 @@ export function VideoExtras({ video, auth, onUpdated }: { video: Video; auth: Au
     event.preventDefault();
     if (!auth || !content.trim()) return;
     try {
-      const response = await postComment(video.id, content.trim(), auth.header);
+      const response = await createComment(video.id, content.trim(), auth.header);
       setComments(current => [...current, response.data]);
       setContent('');
       setMessage('');
