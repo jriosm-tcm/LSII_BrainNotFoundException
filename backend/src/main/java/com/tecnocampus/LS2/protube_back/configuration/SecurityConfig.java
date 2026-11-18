@@ -36,7 +36,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/profile/me").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/videos/**", "/media/**", "/api/profile/*").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/videos/*/comments").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/videos/*/comments", "/api/videos/*/comments/*/replies",
+                                "/api/videos/*/comments/*/likes").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/videos/*/stats/view").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/profile/me", "/api/videos/*/metadata").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/videos/upload").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/auth/me").authenticated()
