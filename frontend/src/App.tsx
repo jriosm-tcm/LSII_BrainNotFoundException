@@ -7,7 +7,6 @@ import { useAllVideos } from './useAllVideos';
 import type { Video, Auth } from './types';
 import { register, getCurrentUser } from './api/auth';
 import { uploadVideo, trackVideoOpen } from './api/videos';
-import { getEnv } from './utils/Env';
 
 const mediaUrl = (path: string) => path ? new URL(path, window.location.origin).toString() : '';
 
