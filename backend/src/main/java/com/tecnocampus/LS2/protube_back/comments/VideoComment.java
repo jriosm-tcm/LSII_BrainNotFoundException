@@ -10,12 +10,17 @@ public class VideoComment {
     private Long id;
     @Column(nullable = false) private String videoId;
     @Column(nullable = false) private String author;
+    @Column(name="parent_id") private Long parentId;
     @Column(nullable = false, length = 2000) private String content;
     @Column(nullable = false) private Instant createdAt = Instant.now();
     protected VideoComment() {}
     public VideoComment(String videoId, String author, String content) {
-        this.videoId = videoId; this.author = author; this.content = content;
+        this(videoId, author, content, null);
     }
+    public VideoComment(String videoId,String author,String content,Long parentId) {
+        this.videoId=videoId;this.author=author;this.content=content;this.parentId=parentId;
+    }
+    public Long getParentId(){return parentId;}
     public Long getId() { return id; }
     public String getVideoId() { return videoId; }
     public String getAuthor() { return author; }
