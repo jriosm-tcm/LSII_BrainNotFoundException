@@ -63,6 +63,11 @@ public class VideosController {
         }
     }
 
+    @GetMapping("/mine")
+    public ResponseEntity<List<java.util.Map<String, Object>>> myVideos(Authentication authentication) {
+        return ResponseEntity.ok(videoService.getVideosByOwner(authentication.getName()));
+    }
+
     @GetMapping("/search")
     public ResponseEntity<List<java.util.Map<String, Object>>> searchVideos(
             @RequestParam(name = "q", defaultValue = "") String query) {
