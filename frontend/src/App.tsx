@@ -67,6 +67,7 @@ function App() {
   };
 
   const openVideo = (video: Video) => {
+    void axios.post(getEnv().API_BASE_URL + '/videos/' + encodeURIComponent(video.id) + '/stats/view').catch(() => {});
     setPlaybackError(false);
     setSelected(video);
   };
