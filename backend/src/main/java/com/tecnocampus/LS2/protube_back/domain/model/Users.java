@@ -1,6 +1,7 @@
 package com.tecnocampus.LS2.protube_back.domain.model;
 
 import java.time.LocalDateTime;
+import java.util.Locale;
 import java.util.UUID;
 
 public class Users {
@@ -20,7 +21,8 @@ public class Users {
     }
 
     public static Users createUser(String username, String email, String passwordhash) {
-        return new Users(UUID.randomUUID().toString(), username, email, passwordhash, LocalDateTime.now());
+        String normalizedEmail = email.trim().toLowerCase(Locale.ROOT);
+        return new Users(UUID.randomUUID().toString(), username, normalizedEmail, passwordhash, LocalDateTime.now());
     }
 
     public String getId() {

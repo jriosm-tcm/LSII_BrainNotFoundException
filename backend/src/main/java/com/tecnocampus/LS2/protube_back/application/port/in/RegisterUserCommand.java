@@ -4,6 +4,7 @@ import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.nio.charset.StandardCharsets;
 
@@ -21,6 +22,7 @@ public record RegisterUserCommand(
         @Size(min = 15, message = "La contraseña debe tener al menos 15 caracteres.")
         String password
 ) {
+    @JsonIgnore
     @AssertTrue(message = "La contraseña supera el máximo de 72 bytes.")
     public boolean isPasswordWithinBcryptLimit() {
         return password == null

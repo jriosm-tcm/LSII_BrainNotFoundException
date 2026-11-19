@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAllVideos } from '../useAllVideos';
 import { getEnv } from '../utils/Env';
 import './VideosPage.css';
@@ -45,7 +46,7 @@ const VideosPage = () => {
 
       <div className="video-grid">
         {value.map((video) => (
-          <a key={video.id} className="video-item" href={`/video/${video.id}`}>
+          <Link key={video.id} className="video-item" to={`/video/${video.id}`}>
             {video.thumbnailUrl && !brokenThumbnails.includes(video.id) ? (
               <img
                 src={`${getEnv().MEDIA_BASE_URL}${video.thumbnailUrl}`}
@@ -62,7 +63,7 @@ const VideosPage = () => {
               </div>
             )}
             <p className="video-title">{video.title}</p>
-          </a>
+          </Link>
         ))}
       </div>
     </div>
