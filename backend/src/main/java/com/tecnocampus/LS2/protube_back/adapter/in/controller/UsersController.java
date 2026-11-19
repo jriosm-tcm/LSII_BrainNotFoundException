@@ -1,11 +1,9 @@
 package com.tecnocampus.LS2.protube_back.adapter.in.controller;
 
-import com.tecnocampus.LS2.protube_back.adapter.in.dto.RegisterRequest;
+import com.tecnocampus.LS2.protube_back.application.port.in.RegisterUserCommand;
 import com.tecnocampus.LS2.protube_back.adapter.in.dto.UserResponse;
 import com.tecnocampus.LS2.protube_back.application.port.in.UsersManagmentUseCase;
-import com.tecnocampus.LS2.protube_back.application.port.in.VideoManagementUseCase;
-import org.h2.engine.User;
-import org.springframework.http.HttpStatus;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,10 +20,9 @@ public class UsersController {
             this.userUseCase = userUseCase;
         }
 
-    @PostMapping
-    public ResponseEntity<UserResponse> createUser(@RequestBody RegisterRequest request) {
-        UserResponse Response= userUseCase.createUser(request);
-        return ResponseEntity.ok(Response);
+    @PostMapping("/register")
+    public ResponseEntity<UserResponse> createUser(@RequestBody @Valid RegisterUserCommand request) {
+        return ResponseEntity.ok(userUseCase.createUser(request));
     }
 
     //login

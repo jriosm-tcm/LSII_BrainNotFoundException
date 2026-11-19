@@ -1,6 +1,6 @@
 package com.tecnocampus.LS2.protube_back.application.services;
 
-import com.tecnocampus.LS2.protube_back.adapter.in.dto.RegisterRequest;
+import com.tecnocampus.LS2.protube_back.application.port.in.RegisterUserCommand;
 import com.tecnocampus.LS2.protube_back.adapter.in.dto.UserResponse;
 import com.tecnocampus.LS2.protube_back.application.port.in.UsersManagmentUseCase;
 import com.tecnocampus.LS2.protube_back.application.port.out.PasswordHasher;
@@ -20,7 +20,7 @@ public class UsersService implements UsersManagmentUseCase {
     }
 
     @Override
-    public UserResponse createUser(RegisterRequest r) {
+    public UserResponse createUser(RegisterUserCommand r) {
         String passwordhash = passwordHasher.hash(r.password());
         Users user = Users.createUser(r.username(), r.email(), passwordhash);
         usersPort.saveUser(user);
