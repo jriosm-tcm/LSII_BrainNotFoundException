@@ -3,13 +3,18 @@ import { useAllVideos } from '../useAllVideos';
 import { getEnv } from '../utils/Env';
 import { Link, useParams } from 'react-router-dom';
 import './VideoDetailPage.css';
+import type { AuthSession } from '../api/auth';
+import VideoComments from '../components/VideoComments';
 
-const VideoDetailPage = () => {
+type VideoDetailPageProps = {
+  session: AuthSession | null;
+};
+
+const VideoDetailPage = ({ session }: VideoDetailPageProps) => {
   const { id } = useParams();
   const { loading, message, value } = useAllVideos();
   const [query, setQuery] = useState('');
   const [playbackError, setPlaybackError] = useState(false);
-
 
   useEffect(() => {
     document.title = 'ProTube - Detalle del Video';
@@ -22,8 +27,6 @@ const VideoDetailPage = () => {
     return <div>Loading...</div>;
   }
 
-
-
   if (loading === 'error') {
     return (
       <div>
@@ -34,7 +37,7 @@ const VideoDetailPage = () => {
   }
 
   if (loading === 'success') {
-    const video: any = value.find((video: any) => video.id === parseInt(id!));
+    const video = value.find((video) => video.id === Number(id));
 
     if (!video) {
       return <div>Video no encontrado</div>;
@@ -77,6 +80,7 @@ const VideoDetailPage = () => {
             </p>
           )}
           <p className="video-description">{video.description}</p>
+          <VideoComments key={`${video.id}:${session?.email ?? 'guest'}`} videoId={video.id} session={session} />
         </div>
       </div>
     );

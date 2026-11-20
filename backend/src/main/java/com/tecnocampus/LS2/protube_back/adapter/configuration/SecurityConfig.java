@@ -64,6 +64,7 @@ public class SecurityConfig {
                                 "/api/videos",
                                 "/api/videos/search",
                                 "/api/videos/{id:[0-9]+}",
+                                "/api/videos/{videoId:[0-9]+}/comments",
                                 "/api/profiles/*",
                                 "/media/**"
                         ).permitAll()

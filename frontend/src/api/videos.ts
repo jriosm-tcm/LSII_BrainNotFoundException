@@ -34,3 +34,26 @@ export async function getMyVideos(authorization: string, signal?: AbortSignal): 
 
   return response.data;
 }
+
+export type UpdateVideoMetadataData = {
+  title: string;
+  description: string;
+};
+
+export async function updateVideoMetadata(
+    id: number,
+    data: UpdateVideoMetadataData,
+    authorization: string
+): Promise<Video> {
+  const response = await axios.put<Video>(
+      `${getEnv().API_BASE_URL}/videos/${id}/metadata`,
+      data,
+      {
+        headers: {
+          Authorization: authorization,
+        },
+      }
+  );
+
+  return response.data;
+}

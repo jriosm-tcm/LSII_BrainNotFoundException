@@ -25,7 +25,9 @@ function App() {
       <Routes>
         <Route path="/" element={<VideosPage />} />
         <Route path="/videos" element={<VideosPage />} />
-        <Route path="/video/:id" element={<VideoDetailPage />} />
+
+        <Route path="/video/:id" element={<VideoDetailPage session={session} />} />
+
         <Route path="/login" element={<LoginPage onLogin={setSession} />} />
         <Route path="/register" element={<RegisterPage onLogin={setSession} />} />
 
