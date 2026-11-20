@@ -44,19 +44,51 @@ public class UsersRepository implements UsersPort {
     @Override
     public Optional<Users> findByEmail(String email) {
         return jdbcClient.sql("""
-            SELECT id, username, email, password_hash, created_at
+            SELECT id, username, email, password_hash,
+                   created_at, description, avatar_url
             FROM users
             WHERE email = :email
             """)
                 .param("email", email)
-                .query((rs, rowNum) -> new Users(
-                        rs.getString("id"),
-                        rs.getString("username"),
-                        rs.getString("email"),
-                        rs.getString("password_hash"),
-                        rs.getTimestamp("created_at").toLocalDateTime()
-                ))
+                .query((rs, rowNum) -> {
+                    Users user = new Users(
+                            rs.getString("id"),
+                            rs.getString("username"),
+                            rs.getString("email"),
+                            rs.getString("password_hash"),
+                            rs.getTimestamp("created_at").toLocalDateTime()
+                    );
+
+                    user.setDescription(rs.getString("description"));
+                    user.setAvatarUrl(rs.getString("avatar_url"));
+
+                    return user;
+                })
                 .optional();
+    }
+
+    @Override
+    public boolean updateDescription(String id, String description) {
+        return jdbcClient.sql("""
+            UPDATE users
+            SET description = :description
+            WHERE id = :id
+            """)
+                .param("description", description)
+                .param("id", id)
+                .update() == 1;
+    }
+
+    @Override
+    public boolean updateAvatarUrl(String id, String avatarUrl) {
+        return jdbcClient.sql("""
+            UPDATE users
+            SET avatar_url = :avatarUrl
+            WHERE id = :id
+            """)
+                .param("avatarUrl", avatarUrl)
+                .param("id", id)
+                .update() == 1;
     }
 
 

@@ -9,4 +9,6 @@ public interface UsersPort {
 
     void saveUser(Users user);
     Optional<Users> findByEmail(String email);
+    boolean updateDescription(String id, String description);
+    boolean updateAvatarUrl(String id, String avatarUrl);
 }

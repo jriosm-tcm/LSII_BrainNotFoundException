@@ -19,5 +19,7 @@ CREATE TABLE users (
                        username VARCHAR(100) NOT NULL,
                        email VARCHAR(254) NOT NULL UNIQUE,
                        password_hash VARCHAR(255) NOT NULL,
-                       created_at TIMESTAMP NOT NULL
+                       created_at TIMESTAMP NOT NULL,
+                       description VARCHAR(500) NOT NULL DEFAULT '',
+                       avatar_url VARCHAR(500) NOT NULL DEFAULT ''
 );

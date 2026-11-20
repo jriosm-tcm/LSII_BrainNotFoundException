@@ -17,6 +17,10 @@ function Header({ email, onLogout }: HeaderProps) {
           <>
             <span className="text-light">{email}</span>
 
+            <Link to="/profile" className="btn btn-outline-light">
+              Mi perfil
+            </Link>
+
             <button type="button" className="btn btn-outline-light" onClick={onLogout}>
               Cerrar sesión
             </button>

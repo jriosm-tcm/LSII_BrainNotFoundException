@@ -10,7 +10,8 @@ public class Users {
     private String email;
     private String passwordhash;
     private LocalDateTime createdAt;
-
+    private String description = "";
+    private String avatarUrl = "";
 
     public Users(String id, String user, String email, String passwordhash, LocalDateTime createdAt) {
         this.id = id;
@@ -64,4 +65,12 @@ public class Users {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
+
+    public String getDescription() {return description;}
+
+    public void setDescription(String description) {this.description = description;}
+
+    public String getAvatarUrl() {return avatarUrl;}
+
+    public void setAvatarUrl(String avatarUrl) {this.avatarUrl = avatarUrl;}
 }

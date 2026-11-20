@@ -19,7 +19,7 @@ public record RegisterUserCommand(
         String email,
 
         @NotBlank(message = "Escribe una contraseña.")
-        @Size(min = 15, message = "La contraseña debe tener al menos 15 caracteres.")
+        //@Size(min = 15, message = "La contraseña debe tener al menos 15 caracteres.")
         String password
 ) {
     @JsonIgnore
