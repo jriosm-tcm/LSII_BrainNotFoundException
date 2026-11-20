@@ -2,6 +2,7 @@ package com.tecnocampus.LS2.protube_back.application.services;
 
 import com.tecnocampus.LS2.protube_back.application.port.in.ProfileManagementUseCase;
 import com.tecnocampus.LS2.protube_back.application.port.in.ProfileResult;
+import com.tecnocampus.LS2.protube_back.application.port.in.PublicProfileResult;
 import com.tecnocampus.LS2.protube_back.application.port.in.UpdateProfileCommand;
 import com.tecnocampus.LS2.protube_back.application.port.out.UsersPort;
 import com.tecnocampus.LS2.protube_back.domain.model.Users;
@@ -100,5 +101,16 @@ public class ProfileService implements ProfileManagementUseCase {
                 user.getDescription(),
                 user.getAvatarUrl()
         );
+    }
+
+    @Override
+    public Optional<PublicProfileResult> getPublicProfile(String id) {
+        return usersPort.findById(id)
+                .map(user -> new PublicProfileResult(
+                        user.getId(),
+                        user.getUsername(),
+                        user.getDescription(),
+                        user.getAvatarUrl()
+                ));
     }
 }

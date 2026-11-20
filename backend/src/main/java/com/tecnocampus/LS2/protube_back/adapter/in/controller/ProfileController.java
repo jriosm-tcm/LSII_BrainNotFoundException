@@ -56,9 +56,7 @@ public class ProfileController {
             value = "/me/avatar",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-    public ResponseEntity<ProfileResult> uploadAvatar(
-            @RequestPart("file") MultipartFile file,
-            Authentication authentication
+    public ResponseEntity<ProfileResult> uploadAvatar(@RequestPart("file") MultipartFile file, Authentication authentication
     ) throws IOException {
         if (file.isEmpty()
                 || file.getSize() > ProfileManagementUseCase.MAX_AVATAR_BYTES) {

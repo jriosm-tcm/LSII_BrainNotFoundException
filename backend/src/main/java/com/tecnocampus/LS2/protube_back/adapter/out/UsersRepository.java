@@ -68,6 +68,32 @@ public class UsersRepository implements UsersPort {
     }
 
     @Override
+    public Optional<Users> findById(String id) {
+        return jdbcClient.sql("""
+        SELECT id, username, email, password_hash,
+               created_at, description, avatar_url
+        FROM users
+        WHERE id = :id
+        """)
+                .param("id", id)
+                .query((rs, rowNum) -> {
+                    Users user = new Users(
+                            rs.getString("id"),
+                            rs.getString("username"),
+                            rs.getString("email"),
+                            rs.getString("password_hash"),
+                            rs.getTimestamp("created_at").toLocalDateTime()
+                    );
+
+                    user.setDescription(rs.getString("description"));
+                    user.setAvatarUrl(rs.getString("avatar_url"));
+
+                    return user;
+                })
+                .optional();
+    }
+
+    @Override
     public boolean updateDescription(String id, String description) {
         return jdbcClient.sql("""
             UPDATE users

@@ -8,13 +8,9 @@ public interface ProfileManagementUseCase {
 
     Optional<ProfileResult> getMyProfile(String email);
 
-    Optional<ProfileResult> updateMyProfile(
-            String email,
-            UpdateProfileCommand command
-    );
+    Optional<PublicProfileResult> getPublicProfile(String id);
 
-    Optional<ProfileResult> uploadMyAvatar(
-            String email,
-            byte[] content
-    );
+    Optional<ProfileResult> updateMyProfile(String email, UpdateProfileCommand command);
+
+    Optional<ProfileResult> uploadMyAvatar(String email, byte[] content);
 }
