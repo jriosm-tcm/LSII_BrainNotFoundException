@@ -4,9 +4,13 @@ import com.tecnocampus.LS2.protube_back.adapter.in.dto.VideoDTO;
 import com.tecnocampus.LS2.protube_back.application.port.in.VideoManagementUseCase;
 import com.tecnocampus.LS2.protube_back.application.services.VideoService;
 import com.tecnocampus.LS2.protube_back.domain.model.Video;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
+import com.tecnocampus.LS2.protube_back.application.port.in.UpdateVideoMetadataCommand;
+import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.Map;
@@ -31,6 +35,18 @@ public class VideosController {
         return ResponseEntity.ok(videos);
     }
 
+    @GetMapping("/mine")
+    @SecurityRequirement(name = "basicAuth")
+    public ResponseEntity<List<VideoDTO>> getMyVideos(Authentication authentication) {
+        List<VideoDTO> videos = videoUseCase
+                .getMyVideos(authentication.getName())
+                .stream()
+                .map(this::toDto)
+                .toList();
+
+        return ResponseEntity.ok(videos);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<VideoDTO> getVideoById(@PathVariable Long id) {
         Video video = videoUseCase.getVideoById(id);
@@ -44,6 +60,12 @@ public class VideosController {
                 .map(this::toDto)
                 .toList();
         return ResponseEntity.ok(videos);
+    }
+
+    @PutMapping("/{id}/metadata")
+    @SecurityRequirement(name = "basicAuth")
+    public ResponseEntity<VideoDTO> updateMetadata(@PathVariable("id") Long id, @Valid @RequestBody UpdateVideoMetadataCommand command, Authentication authentication) {
+        return ResponseEntity.of(videoUseCase.updateMetadata(id, authentication.getName(), command).map(this::toDto));
     }
 
     private VideoDTO toDto(Video video) {

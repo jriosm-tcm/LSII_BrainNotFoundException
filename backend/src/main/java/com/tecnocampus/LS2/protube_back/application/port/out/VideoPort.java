@@ -8,7 +8,9 @@ import java.util.Optional;
 public interface VideoPort {
 
     Optional<Video> getVideoById(Long id);
-
     List<Video> getVideos();
+    List<Video> getVideosByOwner(String email);
+    Video saveVideo(Video video, String ownerId);
+    boolean updateMetadata(Long id, String ownerEmail, String title, String description);
 
 }

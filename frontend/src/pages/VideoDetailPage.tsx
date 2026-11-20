@@ -63,7 +63,7 @@ const VideoDetailPage = () => {
             key={video.id}
             controls
             className="video-player"
-            poster={`${getEnv().MEDIA_BASE_URL}${video.thumbnailUrl}`}
+            poster={video.thumbnailUrl ? `${getEnv().MEDIA_BASE_URL}${video.thumbnailUrl}` : undefined}
             src={`${getEnv().MEDIA_BASE_URL}${video.url}`}
             onError={() => setPlaybackError(true)}
           >

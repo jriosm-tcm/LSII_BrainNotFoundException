@@ -6,6 +6,7 @@ import com.tecnocampus.LS2.protube_back.domain.model.Video;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +22,11 @@ public class VideoRepository implements VideoPort {
     @Override
     public Optional<Video> getVideoById(Long id) {
         return jdbcClient
-                .sql("SELECT id, title, description FROM videos WHERE id = :id")
+                .sql("""
+                SELECT id, title, description, video_url, thumbnail_url
+                FROM videos
+                WHERE id = :id
+                """)
                 .param("id", id)
                 .query(videoMapper)
                 .optional();
@@ -30,7 +35,10 @@ public class VideoRepository implements VideoPort {
     @Override
     public List<Video> getVideos() {
         return jdbcClient
-                .sql("SELECT id, title, description FROM videos")
+                .sql("""
+                SELECT id, title, description, video_url, thumbnail_url
+                FROM videos
+                """)
                 .query(videoMapper)
                 .list();
     }
@@ -38,15 +46,102 @@ public class VideoRepository implements VideoPort {
     private final RowMapper<Video> videoMapper = (rs, rowNum) -> {
         Long id = rs.getLong("id");
 
+        String videoUrl = rs.getString("video_url");
+        String thumbnailUrl = rs.getString("thumbnail_url");
+
         return new Video(
                 id,
                 rs.getString("title"),
                 rs.getString("description"),
-                "/" + id + ".mp4",
-                "/" + id + ".webp"
+                videoUrl == null ? "/" + id + ".mp4" : videoUrl,
+                thumbnailUrl == null ? "/" + id + ".webp" : thumbnailUrl
         );
     };
 
+    @Override
+    public List<Video> getVideosByOwner(String email) {
+        return jdbcClient
+                .sql("""
+                SELECT v.id, v.title, v.description,
+                    v.video_url, v.thumbnail_url
+                FROM videos v
+                JOIN users u ON v.owner_id = u.id
+                WHERE u.email = :email
+                ORDER BY v.id DESC
+                """)
+                .param("email", email)
+                .query(videoMapper)
+                .list();
+    }
+
+    @Override
+    public Video saveVideo(Video video, String ownerId) {
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcClient.sql("""
+        INSERT INTO videos (
+            title,
+            description,
+            video_url,
+            thumbnail_url,
+            owner_id
+        )
+        VALUES (
+            :title,
+            :description,
+            :videoUrl,
+            :thumbnailUrl,
+            :ownerId
+        )
+        """)
+                .param("title", video.getTitle())
+                .param("description", video.getDescription())
+                .param("videoUrl", video.getUrl())
+                .param("thumbnailUrl", video.getThumbnailUrl())
+                .param("ownerId", ownerId)
+                .update(keyHolder, "id");
+
+        Number generatedId = keyHolder.getKey();
+
+        if (generatedId == null) {
+            throw new IllegalStateException(
+                    "No se ha podido obtener el identificador del vídeo."
+            );
+        }
+
+        return new Video(
+                generatedId.longValue(),
+                video.getTitle(),
+                video.getDescription(),
+                video.getUrl(),
+                video.getThumbnailUrl()
+        );
+    }
+
+    @Override
+    public boolean updateMetadata(
+            Long id,
+            String ownerEmail,
+            String title,
+            String description
+    ) {
+        return jdbcClient.sql("""
+        UPDATE videos
+        SET title = :title,
+            description = :description
+        WHERE id = :id
+          AND owner_id = (
+              SELECT id
+              FROM users
+              WHERE email = :ownerEmail
+          )
+        """)
+                .param("title", title)
+                .param("description", description)
+                .param("id", id)
+                .param("ownerEmail", ownerEmail)
+                .update() == 1;
+    }
 
 }
 

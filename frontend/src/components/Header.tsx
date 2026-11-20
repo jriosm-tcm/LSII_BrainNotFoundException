@@ -12,13 +12,21 @@ function Header({ email, onLogout }: HeaderProps) {
         ProTube
       </Link>
 
-      <div className="d-flex align-items-center gap-3">
+      <div className="d-flex align-items-center flex-wrap gap-2">
         {email ? (
           <>
             <span className="text-light">{email}</span>
 
             <Link to="/profile" className="btn btn-outline-light">
               Mi perfil
+            </Link>
+
+            <Link to="/my-videos" className="btn btn-outline-light">
+              Mis vídeos
+            </Link>
+
+            <Link to="/upload" className="btn btn-outline-light">
+              Subir vídeo
             </Link>
 
             <button type="button" className="btn btn-outline-light" onClick={onLogout}>

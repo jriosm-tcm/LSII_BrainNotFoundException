@@ -10,6 +10,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import com.tecnocampus.LS2.protube_back.application.exception.VideoNotOwnedException;
+import com.tecnocampus.LS2.protube_back.application.port.in.UpdateVideoMetadataCommand;
+import java.util.Optional;
 
 @Service
 public class VideoService implements VideoManagementUseCase {
@@ -69,5 +72,46 @@ public class VideoService implements VideoManagementUseCase {
         return 0;
     }
 
+    @Override
+    public List<Video> getMyVideos(String email) {
+        return videoPort.getVideosByOwner(email);
+    }
+
+    @Override
+    public Optional<Video> updateMetadata(Long id, String email, UpdateVideoMetadataCommand command) {
+        Optional<Video> result = videoPort.getVideoById(id);
+
+        if (result.isEmpty()) {
+            return Optional.empty();
+        }
+
+        String title = command.title().trim();
+        String description = command.description() == null
+                ? ""
+                : command.description().trim();
+
+        boolean updated = videoPort.updateMetadata(
+                id,
+                email,
+                title,
+                description
+        );
+
+        if (!updated) {
+            throw new VideoNotOwnedException();
+        }
+
+        Video previousVideo = result.get();
+
+        return Optional.of(new Video(
+                previousVideo.getId(),
+                title,
+                description,
+                previousVideo.getUrl(),
+                previousVideo.getThumbnailUrl()
+        ));
+    }
+
     private record SearchMatch(Video video, int score) {}
+
 }
