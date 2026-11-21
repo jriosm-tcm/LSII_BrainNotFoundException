@@ -106,6 +106,23 @@ public class CommentsRepository implements CommentsPort {
         );
     }
 
+    @Override
+    public boolean lockComment(Long videoId, Long commentId) {
+        return jdbcClient.sql("""
+        SELECT id
+        FROM video_comments
+        WHERE id = :commentId
+          AND video_id = :videoId
+        FOR UPDATE
+        """)
+                .param("commentId", commentId)
+                .param("videoId", videoId)
+                .query(Long.class)
+                .optional()
+                .isPresent();
+    }
+
+
     private final RowMapper<Comments> commentMapper = (rs, rowNum) ->
             new Comments(
                     rs.getLong("id"),
@@ -116,4 +133,6 @@ public class CommentsRepository implements CommentsPort {
                     rs.getString("content"),
                     rs.getTimestamp("created_at").toLocalDateTime()
             );
+
+
 }

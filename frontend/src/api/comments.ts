@@ -55,3 +55,45 @@ export async function createReply(
 
   return response.data;
 }
+
+export type CommentLikesResult = {
+  likes: number;
+};
+
+export type CommentLikeResult = {
+  likes: number;
+  liked: boolean;
+};
+
+export async function getCommentLikes(
+  videoId: number,
+  commentId: number,
+  signal?: AbortSignal
+): Promise<CommentLikesResult> {
+  const response = await axios.get<CommentLikesResult>(
+    `${getEnv().API_BASE_URL}/videos/${videoId}/comments/${commentId}/likes`,
+    {
+      signal,
+    }
+  );
+
+  return response.data;
+}
+
+export async function toggleCommentLike(
+  videoId: number,
+  commentId: number,
+  authorization: string
+): Promise<CommentLikeResult> {
+  const response = await axios.post<CommentLikeResult>(
+    `${getEnv().API_BASE_URL}/videos/${videoId}/comments/${commentId}/likes`,
+    null,
+    {
+      headers: {
+        Authorization: authorization,
+      },
+    }
+  );
+
+  return response.data;
+}

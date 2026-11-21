@@ -10,4 +10,5 @@ public interface CommentsPort {
     List<Comments> getCommentsByVideoId(Long videoId);
     Comments saveComment(Comments comment);
     Optional<Comments> getCommentById(Long videoId, Long commentId);
+    boolean lockComment(Long videoId, Long commentId);
 }

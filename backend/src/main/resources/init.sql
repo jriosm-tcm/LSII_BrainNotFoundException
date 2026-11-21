@@ -54,3 +54,18 @@ ALTER TABLE video_comments
 ALTER TABLE video_comments
     ADD CONSTRAINT fk_comments_parent
         FOREIGN KEY (parent_id) REFERENCES video_comments(id);
+
+
+
+CREATE TABLE comment_likes (
+                               comment_id BIGINT NOT NULL,
+                               user_id VARCHAR(36) NOT NULL,
+
+                               PRIMARY KEY (comment_id, user_id),
+
+                               CONSTRAINT fk_comment_likes_comment
+                                   FOREIGN KEY (comment_id) REFERENCES video_comments(id),
+
+                               CONSTRAINT fk_comment_likes_user
+                                   FOREIGN KEY (user_id) REFERENCES users(id)
+);

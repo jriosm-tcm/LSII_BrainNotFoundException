@@ -6,6 +6,7 @@ import type { AuthSession } from '../api/auth';
 import { createComment, getComments } from '../api/comments';
 import type { VideoComment } from '../api/comments';
 import ReplyCommentForm from './ReplyCommentsForm';
+import CommentLikeButton from './CommentLikeButton';
 
 type VideoCommentsProps = {
   videoId: number;
@@ -190,6 +191,14 @@ function VideoComments({ videoId, session }: VideoCommentsProps) {
                 >
                   {comment.content}
                 </p>
+
+                <div className="mt-3">
+                  <CommentLikeButton
+                    videoId={videoId}
+                    commentId={comment.id}
+                    authorization={session?.authorization ?? null}
+                  />
+                </div>
 
                 {session && (
                   <div className="mt-3">
