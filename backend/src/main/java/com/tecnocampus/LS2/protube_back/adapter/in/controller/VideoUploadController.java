@@ -59,7 +59,8 @@ public class VideoUploadController {
                     video.getTitle(),
                     video.getDescription(),
                     video.getUrl(),
-                    video.getThumbnailUrl()
+                    video.getThumbnailUrl(),
+                    video.getAuthorName()
             );
 
             return ResponseEntity

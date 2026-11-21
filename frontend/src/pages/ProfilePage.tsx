@@ -9,6 +9,7 @@ import { getEnv } from '../utils/Env';
 
 type ProfilePageProps = {
   session: AuthSession;
+  onAvatarChange: (avatarUrl: string) => void;
 };
 
 type ApiProblem = {
@@ -33,7 +34,7 @@ function getErrorMessage(error: unknown, fallback: string): string {
   return fallback;
 }
 
-function ProfilePage({ session }: ProfilePageProps) {
+function ProfilePage({ session, onAvatarChange }: ProfilePageProps) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(true);
@@ -128,6 +129,7 @@ function ProfilePage({ session }: ProfilePageProps) {
       const updatedProfile = await uploadAvatar(avatarFile, session.authorization);
 
       setProfile(updatedProfile);
+      onAvatarChange(updatedProfile.avatarUrl);
       setAvatarFile(null);
 
       if (avatarInputRef.current) {

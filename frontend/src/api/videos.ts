@@ -57,3 +57,22 @@ export async function updateVideoMetadata(
 
   return response.data;
 }
+
+export type VideoStats = {
+  views: number;
+  comments: number;
+};
+
+export async function getVideoStats(videoId: number, signal?: AbortSignal): Promise<VideoStats> {
+  const response = await axios.get<VideoStats>(`${getEnv().API_BASE_URL}/videos/${videoId}/stats`, {
+    signal,
+  });
+
+  return response.data;
+}
+
+export async function registerVideoView(videoId: number): Promise<VideoStats> {
+  const response = await axios.post<VideoStats>(`${getEnv().API_BASE_URL}/videos/${videoId}/stats/view`);
+
+  return response.data;
+}

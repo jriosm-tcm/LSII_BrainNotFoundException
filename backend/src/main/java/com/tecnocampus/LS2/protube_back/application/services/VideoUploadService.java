@@ -17,23 +17,14 @@ public class VideoUploadService implements VideoUploadUseCase {
     private final VideoPort videoPort;
     private final VideoStoragePort videoStorage;
 
-    public VideoUploadService(
-            UsersPort usersPort,
-            VideoPort videoPort,
-            VideoStoragePort videoStorage
-    ) {
+    public VideoUploadService(UsersPort usersPort, VideoPort videoPort, VideoStoragePort videoStorage) {
         this.usersPort = usersPort;
         this.videoPort = videoPort;
         this.videoStorage = videoStorage;
     }
 
     @Override
-    public Video uploadVideo(
-            String email,
-            String title,
-            String description,
-            InputStream content
-    ) {
+    public Video uploadVideo(String email, String title, String description, InputStream content) {
         if (title == null || title.isBlank() || title.length() > 200) {
             throw new IllegalArgumentException(
                     "El título es obligatorio y admite hasta 200 caracteres."
@@ -59,7 +50,8 @@ public class VideoUploadService implements VideoUploadUseCase {
                     title.trim(),
                     description == null ? "" : description.trim(),
                     videoUrl,
-                    ""
+                    "",
+                    owner.getUsername()
             );
 
             return videoPort.saveVideo(video, owner.getId());

@@ -69,3 +69,6 @@ CREATE TABLE comment_likes (
                                CONSTRAINT fk_comment_likes_user
                                    FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+ALTER TABLE videos
+    ADD COLUMN views BIGINT NOT NULL DEFAULT 0;

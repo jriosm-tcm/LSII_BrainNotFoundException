@@ -74,7 +74,8 @@ public class VideosController {
                 video.getTitle(),
                 video.getDescription(),
                 video.getUrl(),
-                video.getThumbnailUrl()
+                video.getThumbnailUrl(),
+                video.getAuthorName()
         );
     }
 }

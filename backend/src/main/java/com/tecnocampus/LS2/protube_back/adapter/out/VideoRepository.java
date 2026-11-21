@@ -23,24 +23,31 @@ public class VideoRepository implements VideoPort {
     public Optional<Video> getVideoById(Long id) {
         return jdbcClient
                 .sql("""
-                SELECT id, title, description, video_url, thumbnail_url
-                FROM videos
-                WHERE id = :id
-                """)
-                .param("id", id)
-                .query(videoMapper)
-                .optional();
+                    SELECT v.id,
+                        v.title,
+                        v.description,
+                        v.video_url,
+                        v.thumbnail_url,
+                        u.username AS author_name
+                    FROM videos v
+                    LEFT JOIN users u ON v.owner_id = u.id
+                    WHERE v.id = :id
+                    """)
     }
 
     @Override
     public List<Video> getVideos() {
         return jdbcClient
                 .sql("""
-                SELECT id, title, description, video_url, thumbnail_url
-                FROM videos
-                """)
-                .query(videoMapper)
-                .list();
+                    SELECT v.id,
+                        v.title,
+                        v.description,
+                        v.video_url,
+                        v.thumbnail_url,
+                        u.username AS author_name
+                    FROM videos v
+                    LEFT JOIN users u ON v.owner_id = u.id
+                    """)
     }
 
     private final RowMapper<Video> videoMapper = (rs, rowNum) -> {
@@ -54,7 +61,8 @@ public class VideoRepository implements VideoPort {
                 rs.getString("title"),
                 rs.getString("description"),
                 videoUrl == null ? "/" + id + ".mp4" : videoUrl,
-                thumbnailUrl == null ? "/" + id + ".webp" : thumbnailUrl
+                thumbnailUrl == null ? "/" + id + ".webp" : thumbnailUrl,
+                rs.getString("author_name")
         );
     };
 
@@ -62,16 +70,17 @@ public class VideoRepository implements VideoPort {
     public List<Video> getVideosByOwner(String email) {
         return jdbcClient
                 .sql("""
-                SELECT v.id, v.title, v.description,
-                    v.video_url, v.thumbnail_url
-                FROM videos v
-                JOIN users u ON v.owner_id = u.id
-                WHERE u.email = :email
-                ORDER BY v.id DESC
-                """)
-                .param("email", email)
-                .query(videoMapper)
-                .list();
+                    SELECT v.id,
+                        v.title,
+                        v.description,
+                        v.video_url,
+                        v.thumbnail_url,
+                        u.username AS author_name
+                    FROM videos v
+                    JOIN users u ON v.owner_id = u.id
+                    WHERE u.email = :email
+                    ORDER BY v.id DESC
+                    """)
     }
 
     @Override
@@ -114,7 +123,8 @@ public class VideoRepository implements VideoPort {
                 video.getTitle(),
                 video.getDescription(),
                 video.getUrl(),
-                video.getThumbnailUrl()
+                video.getThumbnailUrl(),
+                video.getAuthorName()
         );
     }
 

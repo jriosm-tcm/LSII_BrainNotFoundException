@@ -56,7 +56,8 @@ public class SecurityConfig {
 
                         .requestMatchers(
                                 HttpMethod.POST,
-                                "/api/users/register"
+                                "/api/users/register",
+                                "/api/videos/{videoId:[0-9]+}/stats/view"
                         ).permitAll()
 
                         .requestMatchers(
@@ -66,6 +67,7 @@ public class SecurityConfig {
                                 "/api/videos/{id:[0-9]+}",
                                 "/api/videos/{videoId:[0-9]+}/comments",
                                 "/api/videos/{videoId:[0-9]+}/comments/{commentId:[0-9]+}/likes",
+                                "/api/videos/{videoId:[0-9]+}/stats",
                                 "/api/profiles/*",
                                 "/media/**"
                         ).permitAll()

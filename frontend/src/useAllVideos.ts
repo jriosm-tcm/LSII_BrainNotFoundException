@@ -8,6 +8,7 @@ export type Video = {
   description: string | null;
   url: string;
   thumbnailUrl: string;
+  authorName: string | null;
 };
 
 type LoadingState = 'loading' | 'success' | 'error' | 'idle';

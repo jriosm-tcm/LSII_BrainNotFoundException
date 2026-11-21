@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
+import type { FormEvent } from 'react';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useAllVideos } from '../useAllVideos';
-import { getEnv } from '../utils/Env';
-import { Link, useParams } from 'react-router-dom';
-import './VideoDetailPage.css';
 import type { AuthSession } from '../api/auth';
+import VideoPlayer from '../components/VideoPlayer';
 import VideoComments from '../components/VideoComments';
+import './VideoDetailPage.css';
 
 type VideoDetailPageProps = {
   session: AuthSession | null;
@@ -12,19 +13,43 @@ type VideoDetailPageProps = {
 
 const VideoDetailPage = ({ session }: VideoDetailPageProps) => {
   const { id } = useParams();
+
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  const [query, setQuery] = useState(searchParams.get('q') ?? '');
+
+  const currentSearch = searchParams.toString();
+
+  const backToVideos = currentSearch ? `/videos?${currentSearch}` : '/videos';
+
   const { loading, message, value } = useAllVideos();
-  const [query, setQuery] = useState('');
-  const [playbackError, setPlaybackError] = useState(false);
 
   useEffect(() => {
     document.title = 'ProTube - Detalle del Video';
   }, []);
 
-  useEffect(() => {
-    setPlaybackError(false);
-  }, [id]);
-  if (loading === 'loading') {
-    return <div>Loading...</div>;
+  const handleSearch = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const term = query.trim();
+
+    const nextParams = new URLSearchParams();
+
+    if (term) {
+      nextParams.set('q', term);
+    }
+
+    const search = nextParams.toString();
+
+    navigate({
+      pathname: '/videos',
+      search: search ? `?${search}` : '',
+    });
+  };
+
+  if (loading === 'loading' || loading === 'idle') {
+    return <div>Cargando vídeo…</div>;
   }
 
   if (loading === 'error') {
@@ -36,57 +61,50 @@ const VideoDetailPage = ({ session }: VideoDetailPageProps) => {
     );
   }
 
-  if (loading === 'success') {
-    const video = value.find((video) => video.id === Number(id));
+  const video = value.find((video) => video.id === Number(id));
 
-    if (!video) {
-      return <div>Video no encontrado</div>;
-    }
-
-    return (
-      <div className="video-detail-page">
-        <div className="catalog-toolbar">
-          <img src="/protube-logo-removebg-preview.png" alt="ProTube" className="search-logo" />
-          <input
-            className="search-field"
-            type="search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Buscar por título o descripción..."
-            aria-label="Buscar vídeos"
-          />
-        </div>
-
-        <div className="video-detail">
-          <Link to="/videos" className="back-to-videos">
-            ← Volver a vídeos
-          </Link>
-          <h1>{video.title}</h1>
-          <video
-            key={video.id}
-            controls
-            className="video-player"
-            poster={video.thumbnailUrl ? `${getEnv().MEDIA_BASE_URL}${video.thumbnailUrl}` : undefined}
-            src={`${getEnv().MEDIA_BASE_URL}${video.url}`}
-            onError={() => setPlaybackError(true)}
-          >
-            Tu navegador no soporta la reproducción de vídeos.
-          </video>
-
-          {playbackError && (
-            <p role="alert">
-              No se ha podido reproducir el vídeo. Comprueba que el archivo esté disponible y tenga un formato
-              compatible.
-            </p>
-          )}
-          <p className="video-description">{video.description}</p>
-          <VideoComments key={`${video.id}:${session?.email ?? 'guest'}`} videoId={video.id} session={session} />
-        </div>
-      </div>
-    );
+  if (!video) {
+    return <div>Vídeo no encontrado</div>;
   }
 
-  return <div>Idle...</div>;
+  return (
+    <div className="video-detail-page">
+      <form className="catalog-toolbar" onSubmit={handleSearch}>
+        <img src="/protube-logo-removebg-preview.png" alt="ProTube" className="search-logo" />
+
+        <input
+          className="search-field"
+          type="search"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder="Buscar por título, descripción o autor..."
+          aria-label="Buscar vídeos"
+        />
+
+        <button type="submit" className="btn btn-primary">
+          Buscar
+        </button>
+      </form>
+
+      <div className="video-detail">
+        <Link to={backToVideos} className="back-to-videos">
+          ← Volver a vídeos
+        </Link>
+
+        <h1>{video.title}</h1>
+
+        <p className="small mb-3">
+          {video.authorName ? `Subido por ${video.authorName}` : 'Vídeo del catálogo inicial'}
+        </p>
+
+        <VideoPlayer key={video.id} video={video} />
+
+        <p className="video-description">{video.description}</p>
+
+        <VideoComments key={`${video.id}:${session?.email ?? 'guest'}`} videoId={video.id} session={session} />
+      </div>
+    </div>
+  );
 };
 
 export default VideoDetailPage;

@@ -1,14 +1,29 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useAllVideos } from '../useAllVideos';
 import { getEnv } from '../utils/Env';
 import './VideosPage.css';
 
 const VideosPage = () => {
-  const [query, setQuery] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const query = searchParams.get('q') ?? '';
+  const currentSearch = searchParams.toString();
+
   const { loading, message, value } = useAllVideos(query);
   const [brokenThumbnails, setBrokenThumbnails] = useState<number[]>([]);
 
+  const handleQueryChange = (nextQuery: string) => {
+    const nextParams = new URLSearchParams(searchParams);
+
+    if (nextQuery) {
+      nextParams.set('q', nextQuery);
+    } else {
+      nextParams.delete('q');
+    }
+
+    setSearchParams(nextParams, { replace: true });
+  };
   useEffect(() => {
     document.title = 'ProTube - Videos';
   }, []);
@@ -21,8 +36,8 @@ const VideosPage = () => {
           className="search-field"
           type="search"
           value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder="Buscar por título o descripción..."
+          onChange={(event) => handleQueryChange(event.target.value)}
+          placeholder="Buscar por título, descripción o autor..."
           aria-label="Buscar vídeos"
         />
 
@@ -46,7 +61,14 @@ const VideosPage = () => {
 
       <div className="video-grid">
         {value.map((video) => (
-          <Link key={video.id} className="video-item" to={`/video/${video.id}`}>
+          <Link
+            key={video.id}
+            className="video-item"
+            to={{
+              pathname: `/video/${video.id}`,
+              search: currentSearch ? `?${currentSearch}` : '',
+            }}
+          >
             {video.thumbnailUrl && !brokenThumbnails.includes(video.id) ? (
               <img
                 src={`${getEnv().MEDIA_BASE_URL}${video.thumbnailUrl}`}
@@ -63,6 +85,10 @@ const VideosPage = () => {
               </div>
             )}
             <p className="video-title">{video.title}</p>
+
+            <p className="small mb-0">
+              {video.authorName ? `Subido por ${video.authorName}` : 'Vídeo del catálogo inicial'}
+            </p>
           </Link>
         ))}
       </div>

@@ -5,5 +5,7 @@ public record VideoDTO(
         String title,
         String description,
         String url,
-        String thumbnailUrl
-) {}
+        String thumbnailUrl,
+        String authorName
+) {
+}

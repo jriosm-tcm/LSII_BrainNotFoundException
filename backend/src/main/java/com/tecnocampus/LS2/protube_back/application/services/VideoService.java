@@ -56,19 +56,30 @@ public class VideoService implements VideoManagementUseCase {
     private int relevance(Video video, String term) {
         String title = video.getTitle().toLowerCase(Locale.ROOT);
         String description = video.getDescription();
+        String authorName = video.getAuthorName();
 
         if (title.equals(term)) {
             return 4;
         }
+
         if (title.startsWith(term)) {
             return 3;
         }
+
         if (title.contains(term)) {
             return 2;
         }
-        if (description != null && description.toLowerCase(Locale.ROOT).contains(term)) {
+
+        if (description != null
+                && description.toLowerCase(Locale.ROOT).contains(term)) {
             return 1;
         }
+
+        if (authorName != null
+                && authorName.toLowerCase(Locale.ROOT).contains(term)) {
+            return 1;
+        }
+
         return 0;
     }
 
@@ -108,7 +119,8 @@ public class VideoService implements VideoManagementUseCase {
                 title,
                 description,
                 previousVideo.getUrl(),
-                previousVideo.getThumbnailUrl()
+                previousVideo.getThumbnailUrl(),
+                previousVideo.getAuthorName()
         ));
     }
 
