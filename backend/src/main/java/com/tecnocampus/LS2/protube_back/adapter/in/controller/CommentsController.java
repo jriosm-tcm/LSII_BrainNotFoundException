@@ -53,4 +53,21 @@ public class CommentsController {
                         .body(comment))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @PostMapping("/{commentId}/replies")
+    @SecurityRequirement(name = "basicAuth")
+    public ResponseEntity<CommentResult> createReply(@PathVariable("videoId") Long videoId, @PathVariable("commentId") Long commentId, @Valid @RequestBody CreateCommentCommand command,
+            Authentication authentication
+    ) {
+        return commentsUseCase.createReply(
+                        videoId,
+                        commentId,
+                        authentication.getName(),
+                        command
+                )
+                .map(comment -> ResponseEntity
+                        .status(HttpStatus.CREATED)
+                        .body(comment))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }

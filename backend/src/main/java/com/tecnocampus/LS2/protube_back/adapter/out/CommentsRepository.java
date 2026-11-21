@@ -8,6 +8,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class CommentsRepository implements CommentsPort {
@@ -23,6 +24,7 @@ public class CommentsRepository implements CommentsPort {
         return jdbcClient.sql("""
             SELECT c.id,
                    c.video_id,
+                   c.parent_id,
                    c.author_id,
                    u.username AS author_name,
                    c.content,
@@ -38,24 +40,48 @@ public class CommentsRepository implements CommentsPort {
     }
 
     @Override
+    public Optional<Comments> getCommentById(Long videoId, Long commentId) {
+        return jdbcClient.sql("""
+            SELECT c.id,
+                   c.video_id,
+                   c.parent_id,
+                   c.author_id,
+                   u.username AS author_name,
+                   c.content,
+                   c.created_at
+            FROM video_comments c
+            JOIN users u ON c.author_id = u.id
+            WHERE c.id = :commentId
+              AND c.video_id = :videoId
+            """)
+                .param("commentId", commentId)
+                .param("videoId", videoId)
+                .query(commentMapper)
+                .optional();
+    }
+
+    @Override
     public Comments saveComment(Comments comment) {
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcClient.sql("""
             INSERT INTO video_comments (
                 video_id,
+                parent_id,
                 author_id,
                 content,
                 created_at
             )
             VALUES (
                 :videoId,
+                :parentId,
                 :authorId,
                 :content,
                 :createdAt
             )
             """)
                 .param("videoId", comment.getVideoId())
+                .param("parentId", comment.getParentId())
                 .param("authorId", comment.getAuthorId())
                 .param("content", comment.getContent())
                 .param("createdAt", comment.getCreatedAt())
@@ -72,6 +98,7 @@ public class CommentsRepository implements CommentsPort {
         return new Comments(
                 generatedId.longValue(),
                 comment.getVideoId(),
+                comment.getParentId(),
                 comment.getAuthorId(),
                 comment.getAuthorName(),
                 comment.getContent(),
@@ -83,6 +110,7 @@ public class CommentsRepository implements CommentsPort {
             new Comments(
                     rs.getLong("id"),
                     rs.getLong("video_id"),
+                    rs.getObject("parent_id", Long.class),
                     rs.getString("author_id"),
                     rs.getString("author_name"),
                     rs.getString("content"),

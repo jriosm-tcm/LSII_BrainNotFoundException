@@ -47,3 +47,10 @@ CREATE TABLE video_comments (
                                 CONSTRAINT fk_comments_author
                                     FOREIGN KEY (author_id) REFERENCES users(id)
 );
+
+ALTER TABLE video_comments
+    ADD COLUMN parent_id BIGINT;
+
+ALTER TABLE video_comments
+    ADD CONSTRAINT fk_comments_parent
+        FOREIGN KEY (parent_id) REFERENCES video_comments(id);

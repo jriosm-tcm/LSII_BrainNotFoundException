@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import type { AuthSession } from '../api/auth';
 import { createComment, getComments } from '../api/comments';
 import type { VideoComment } from '../api/comments';
+import ReplyCommentForm from './ReplyCommentsForm';
 
 type VideoCommentsProps = {
   videoId: number;
@@ -61,6 +62,7 @@ function VideoComments({ videoId, session }: VideoCommentsProps) {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [message, setMessage] = useState('');
+  const [replyToId, setReplyToId] = useState<number | null>(null);
 
   const contentInputId = `comment-content-${videoId}`;
   const contentHelpId = `comment-content-help-${videoId}`;
@@ -99,7 +101,7 @@ function VideoComments({ videoId, session }: VideoCommentsProps) {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!session || loading || loadError || submitting) {
+    if (!session || loading || loadError || submitting || replyToId !== null) {
       return;
     }
 
@@ -132,6 +134,11 @@ function VideoComments({ videoId, session }: VideoCommentsProps) {
       setSubmitting(false);
     }
   }
+  function handleReplyCreated(createdReply: VideoComment) {
+    setComments((current) => [...current, createdReply]);
+    setReplyToId(null);
+    setMessage('Respuesta publicada correctamente.');
+  }
 
   return (
     <section className="mt-4 w-100" style={{ maxWidth: 800 }} aria-label="Comentarios del vídeo">
@@ -150,8 +157,22 @@ function VideoComments({ videoId, session }: VideoCommentsProps) {
           {comments.length === 0 && <p>Todavía no hay comentarios.</p>}
 
           {comments.map((comment) => (
-            <article key={comment.id} className="card bg-dark text-light border-secondary mb-3">
+            <article
+              key={comment.id}
+              id={`comment-${videoId}-${comment.id}`}
+              className={`card bg-dark text-light border-secondary mb-3 ${comment.parentId !== null ? 'ms-3' : ''}`}
+            >
               <div className="card-body">
+                {comment.parentId !== null && (
+                  <p className="small mb-2">
+                    En respuesta a{' '}
+                    <a href={`#comment-${videoId}-${comment.parentId}`} className="link-info">
+                      {comments.find((parent) => parent.id === comment.parentId)?.authorName ??
+                        `comentario #${comment.parentId}`}
+                    </a>
+                  </p>
+                )}
+
                 <div className="d-flex justify-content-between flex-wrap gap-2 mb-2">
                   <strong>{comment.authorName}</strong>
 
@@ -169,6 +190,32 @@ function VideoComments({ videoId, session }: VideoCommentsProps) {
                 >
                   {comment.content}
                 </p>
+
+                {session && (
+                  <div className="mt-3">
+                    {replyToId === comment.id ? (
+                      <ReplyCommentForm
+                        comment={comment}
+                        authorization={session.authorization}
+                        onCreated={handleReplyCreated}
+                        onCancel={() => setReplyToId(null)}
+                      />
+                    ) : (
+                      <button
+                        type="button"
+                        className="btn btn-outline-light btn-sm"
+                        disabled={submitting || replyToId !== null}
+                        onClick={() => {
+                          setMessage('');
+                          setSubmitError('');
+                          setReplyToId(comment.id);
+                        }}
+                      >
+                        Responder
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
             </article>
           ))}
@@ -193,7 +240,7 @@ function VideoComments({ videoId, session }: VideoCommentsProps) {
                   value={content}
                   onChange={(event) => setContent(event.target.value)}
                   maxLength={2000}
-                  disabled={submitting}
+                  disabled={submitting || replyToId !== null}
                   aria-describedby={contentHelpId}
                   required
                 />
@@ -209,7 +256,11 @@ function VideoComments({ videoId, session }: VideoCommentsProps) {
                 </p>
               )}
 
-              <button type="submit" className="btn btn-primary" disabled={submitting || !content.trim()}>
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={submitting || replyToId !== null || !content.trim()}
+              >
                 {submitting ? 'Publicando…' : 'Publicar comentario'}
               </button>
             </form>

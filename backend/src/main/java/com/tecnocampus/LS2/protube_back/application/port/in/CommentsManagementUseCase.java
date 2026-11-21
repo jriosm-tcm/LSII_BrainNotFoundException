@@ -6,10 +6,6 @@ import java.util.Optional;
 public interface CommentsManagementUseCase {
 
     Optional<List<CommentResult>> getComments(Long videoId);
-
-    Optional<CommentResult> createComment(
-            Long videoId,
-            String email,
-            CreateCommentCommand command
-    );
+    Optional<CommentResult> createComment(Long videoId, String email, CreateCommentCommand command);
+    Optional<CommentResult> createReply(Long videoId, Long commentId, String email, CreateCommentCommand command);
 }

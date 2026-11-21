@@ -48,6 +48,24 @@ public class CommentsService implements CommentsManagementUseCase {
             return Optional.empty();
         }
 
+        return saveComment(videoId, null, email, command);
+    }
+
+    @Override
+    public Optional<CommentResult> createReply(Long videoId, Long commentId, String email, CreateCommentCommand command) {
+        if (commentsPort.getCommentById(videoId, commentId).isEmpty()) {
+            return Optional.empty();
+        }
+
+        return saveComment(videoId, commentId, email, command);
+    }
+
+    private Optional<CommentResult> saveComment(
+            Long videoId,
+            Long parentId,
+            String email,
+            CreateCommentCommand command
+    ) {
         Optional<Users> authorResult = usersPort.findByEmail(email);
 
         if (authorResult.isEmpty()) {
@@ -59,6 +77,7 @@ public class CommentsService implements CommentsManagementUseCase {
         Comments comment = new Comments(
                 null,
                 videoId,
+                parentId,
                 author.getId(),
                 author.getUsername(),
                 command.content().trim(),
@@ -74,6 +93,7 @@ public class CommentsService implements CommentsManagementUseCase {
         return new CommentResult(
                 comment.getId(),
                 comment.getVideoId(),
+                comment.getParentId(),
                 comment.getAuthorId(),
                 comment.getAuthorName(),
                 comment.getContent(),

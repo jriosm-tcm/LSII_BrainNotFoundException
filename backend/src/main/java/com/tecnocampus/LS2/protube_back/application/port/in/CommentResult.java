@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 public record CommentResult(
         Long id,
         Long videoId,
+        Long parentId,
         String authorId,
         String authorName,
         String content,
