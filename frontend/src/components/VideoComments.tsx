@@ -7,6 +7,7 @@ import { createComment, getComments } from '../api/comments';
 import type { VideoComment } from '../api/comments';
 import ReplyCommentForm from './ReplyCommentsForm';
 import CommentLikeButton from './CommentLikeButton';
+import './VideoComments.css';
 
 type VideoCommentsProps = {
   videoId: number;
@@ -142,7 +143,7 @@ function VideoComments({ videoId, session }: VideoCommentsProps) {
   }
 
   return (
-    <section className="mt-4 w-100" style={{ maxWidth: 800 }} aria-label="Comentarios del vídeo">
+    <section className="video-comments" aria-label="Comentarios del vídeo">
       <h2 className="h4 mb-3">Comentarios {!loading && !loadError && `(${comments.length})`}</h2>
 
       {loading && <p role="status">Cargando comentarios…</p>}
@@ -161,7 +162,7 @@ function VideoComments({ videoId, session }: VideoCommentsProps) {
             <article
               key={comment.id}
               id={`comment-${videoId}-${comment.id}`}
-              className={`card bg-dark text-light border-secondary mb-3 ${comment.parentId !== null ? 'ms-3' : ''}`}
+              className={`card comment-card mb-3 ${comment.parentId !== null ? 'ms-3' : ''}`}
             >
               <div className="card-body">
                 {comment.parentId !== null && (
@@ -182,15 +183,7 @@ function VideoComments({ videoId, session }: VideoCommentsProps) {
                   </time>
                 </div>
 
-                <p
-                  className="mb-0"
-                  style={{
-                    whiteSpace: 'pre-wrap',
-                    overflowWrap: 'anywhere',
-                  }}
-                >
-                  {comment.content}
-                </p>
+                <p className="comment-content">{comment.content}</p>
 
                 <div className="mt-3">
                   <CommentLikeButton

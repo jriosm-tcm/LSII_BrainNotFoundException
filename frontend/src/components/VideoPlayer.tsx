@@ -3,6 +3,7 @@ import axios from 'axios';
 import { getVideoStats, registerVideoView } from '../api/videos';
 import type { Video } from '../useAllVideos';
 import { getEnv } from '../utils/Env';
+import './VideoPlayer.css';
 
 type VideoPlayerProps = {
   video: Video;
@@ -78,7 +79,7 @@ function VideoPlayer({ video }: VideoPlayerProps) {
   }
 
   return (
-    <div className="w-100" style={{ maxWidth: 800 }}>
+    <div className="video-player-container">
       <video
         controls
         className="video-player"

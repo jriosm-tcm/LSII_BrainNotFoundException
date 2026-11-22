@@ -1,0 +1,26 @@
+.profile-page {
+    width: calc(100% - 32px);
+    max-width: 740px;
+    margin: 40px auto;
+}
+
+.profile-page .profile-avatar {
+    display: block;
+    width: 90px;
+    height: 90px;
+
+    object-fit: cover;
+    border: 1px solid var(--pt-border);
+    border-radius: 50%;
+}
+
+.profile-page .profile-avatar-form {
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--pt-border);
+}
+
+.profile-page .profile-hint {
+    color: var(--pt-muted);
+    font-size: 13px;
+}

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import './App.css';
 import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
 import VideosPage from './pages/VideosPage';
 import ProfilePage from './pages/ProfilePage';
@@ -58,46 +57,50 @@ function App() {
 
   return (
     <Router>
-      <Header
-        key={session?.email ?? 'guest'}
-        email={session?.email ?? null}
-        avatarUrl={headerAvatar ?? ''}
-        onLogout={handleLogout}
-      />
-
-      <Routes>
-        <Route path="/" element={<VideosPage />} />
-        <Route path="/videos" element={<VideosPage />} />
-
-        <Route path="/video/:id" element={<VideoDetailPage session={session} />} />
-
-        <Route path="/login" element={<LoginPage onLogin={setSession} />} />
-
-        <Route path="/register" element={<RegisterPage onLogin={setSession} />} />
-
-        <Route
-          path="/profile"
-          element={
-            session ? (
-              <ProfilePage key={session.email} session={session} onAvatarChange={handleAvatarChange} />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
+      <div className="protube-app" data-bs-theme="dark">
+        <Header
+          key={session?.email ?? 'guest'}
+          email={session?.email ?? null}
+          avatarUrl={headerAvatar ?? ''}
+          onLogout={handleLogout}
         />
 
-        <Route
-          path="/upload"
-          element={
-            session ? <UploadVideoPage key={session.email} session={session} /> : <Navigate to="/login" replace />
-          }
-        />
+        <Routes>
+          <Route path="/" element={<VideosPage />} />
+          <Route path="/videos" element={<VideosPage />} />
 
-        <Route
-          path="/my-videos"
-          element={session ? <MyVideosPage key={session.email} session={session} /> : <Navigate to="/login" replace />}
-        />
-      </Routes>
+          <Route path="/video/:id" element={<VideoDetailPage session={session} />} />
+
+          <Route path="/login" element={<LoginPage onLogin={setSession} />} />
+
+          <Route path="/register" element={<RegisterPage onLogin={setSession} />} />
+
+          <Route
+            path="/profile"
+            element={
+              session ? (
+                <ProfilePage key={session.email} session={session} onAvatarChange={handleAvatarChange} />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+
+          <Route
+            path="/upload"
+            element={
+              session ? <UploadVideoPage key={session.email} session={session} /> : <Navigate to="/login" replace />
+            }
+          />
+
+          <Route
+            path="/my-videos"
+            element={
+              session ? <MyVideosPage key={session.email} session={session} /> : <Navigate to="/login" replace />
+            }
+          />
+        </Routes>
+      </div>
     </Router>
   );
 }

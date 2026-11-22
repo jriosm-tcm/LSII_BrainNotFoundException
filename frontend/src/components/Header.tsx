@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getEnv } from '../utils/Env';
+import './Header.css';
 
 type HeaderProps = {
   email: string | null;
@@ -16,35 +17,34 @@ function Header({ email, avatarUrl, onLogout }: HeaderProps) {
   const showAvatar = avatarSrc !== '' && brokenAvatar !== avatarSrc;
 
   return (
-    <header className="navbar navbar-dark bg-dark px-3 py-2">
-      <Link to="/videos" className="navbar-brand">
-        ProTube
+    <header className="site-header">
+      <Link to="/videos" className="header-brand" aria-label="ProTube: ir al catálogo">
+        <span className="header-brand-symbol" aria-hidden="true">
+          ▶
+        </span>
+
+        <span>
+          Pro<span className="header-brand-accent">Tube</span>
+        </span>
       </Link>
 
-      <div className="d-flex align-items-center flex-wrap gap-2">
+      <div className="header-actions">
         {email ? (
           <>
             {showAvatar ? (
               <img
                 src={avatarSrc}
                 alt={`Avatar de ${email}`}
-                width={36}
-                height={36}
-                className="rounded-circle border"
-                style={{ objectFit: 'cover' }}
+                className="header-avatar"
                 onError={() => setBrokenAvatar(avatarSrc)}
               />
             ) : (
-              <span
-                className="d-inline-flex align-items-center justify-content-center rounded-circle bg-secondary text-white flex-shrink-0"
-                style={{ width: 36, height: 36 }}
-                aria-hidden="true"
-              >
+              <span className="header-avatar-fallback" aria-hidden="true">
                 {email.charAt(0).toUpperCase()}
               </span>
             )}
 
-            <span className="text-light">{email}</span>
+            <span className="header-email">{email}</span>
 
             <Link to="/profile" className="btn btn-outline-light">
               Mi perfil

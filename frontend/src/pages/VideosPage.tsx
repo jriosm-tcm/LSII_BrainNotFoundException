@@ -3,6 +3,8 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { useAllVideos } from '../useAllVideos';
 import { getEnv } from '../utils/Env';
 import './VideosPage.css';
+import '../styles/search-toolbar.css';
+import '../styles/video-catalog.css';
 
 const VideosPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -30,7 +32,16 @@ const VideosPage = () => {
 
   return (
     <div className="videos-page">
-      <div className="catalog-toolbar">
+      <div className="discover-heading">
+        <span className="eyebrow">PROTUBE DISCOVER</span>
+
+        <h1>
+          Explora vídeos<span className="heading-dot">.</span>
+        </h1>
+
+        <p>Descubre lo que comparten los creadores.</p>
+      </div>
+      <div className="search-toolbar">
         <img src="/protube-logo-removebg-preview.png" alt="ProTube" className="search-logo" />
         <input
           className="search-field"
@@ -59,7 +70,7 @@ const VideosPage = () => {
         </p>
       )}
 
-      <div className="video-grid">
+      <div className="video-catalog">
         {value.map((video) => (
           <Link
             key={video.id}

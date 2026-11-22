@@ -33,6 +33,9 @@ public class VideoRepository implements VideoPort {
                     LEFT JOIN users u ON v.owner_id = u.id
                     WHERE v.id = :id
                     """)
+                .param("id", id)
+                .query(videoMapper)
+                .optional();
     }
 
     @Override
@@ -48,6 +51,8 @@ public class VideoRepository implements VideoPort {
                     FROM videos v
                     LEFT JOIN users u ON v.owner_id = u.id
                     """)
+                .query(videoMapper)
+                .list();
     }
 
     private final RowMapper<Video> videoMapper = (rs, rowNum) -> {
@@ -81,6 +86,9 @@ public class VideoRepository implements VideoPort {
                     WHERE u.email = :email
                     ORDER BY v.id DESC
                     """)
+                .param("email", email)
+                .query(videoMapper)
+                .list();
     }
 
     @Override

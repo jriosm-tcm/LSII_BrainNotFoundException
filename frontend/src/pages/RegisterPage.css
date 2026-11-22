@@ -1,0 +1,17 @@
+.register-page {
+    width: calc(100% - 32px);
+    max-width: 480px;
+    margin: 60px auto;
+
+    box-shadow: 0 24px 90px rgb(0 0 0 / 35%);
+}
+
+.register-page h1 {
+    font-size: 30px;
+}
+
+@media (max-width: 650px) {
+    .register-page {
+        margin: 28px auto;
+    }
+}

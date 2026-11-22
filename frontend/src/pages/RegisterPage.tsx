@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { login, register } from '../api/auth';
 import type { AuthSession } from '../api/auth';
+import './RegisterPage.css';
 
 type RegisterPageProps = {
   onLogin: (session: AuthSession) => void;
@@ -84,7 +85,7 @@ function RegisterPage({ onLogin }: RegisterPageProps) {
   }
 
   return (
-    <main className="container py-5" style={{ maxWidth: 480 }}>
+    <main className="register-page ui-panel">
       <h1 className="mb-4">Crear una cuenta</h1>
 
       {message && (

@@ -1,32 +1,59 @@
-.App {
-  text-align: center;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* Paleta compartida */
+:root {
+  --pt-background: #0b0b0c;
+  --pt-panel: #161618;
+  --pt-input: #222225;
+  --pt-border: #303035;
+
+  --pt-text: #f5f5f5;
+  --pt-muted: #9999a0;
+
+  --pt-accent: #53fc18;
+  --pt-accent-hover: #80ff51;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+* {
+  box-sizing: border-box;
 }
 
-.App-header {
-  background-color: #282c34;
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--pt-background);
+  color: var(--pt-text);
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.protube-app {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  background: var(--pt-background);
+  color: var(--pt-text);
+  color-scheme: dark;
+
+  /* Personalización de las variables de Bootstrap */
+  --bs-body-bg: var(--pt-background);
+  --bs-body-color: var(--pt-text);
+  --bs-secondary-color: var(--pt-muted);
+  --bs-border-color: var(--pt-border);
+
+  --bs-link-color-rgb: 133, 255, 96;
+  --bs-link-hover-color-rgb: 179, 255, 156;
 }
 
-.App-link {
-  color: #61dafb;
+.protube-app h1 {
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 800;
+  letter-spacing: -1px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.protube-app :where(a, button, input, textarea):focus-visible {
+  outline: 2px solid var(--pt-accent);
+  outline-offset: 3px;
 }

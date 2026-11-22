@@ -1,0 +1,126 @@
+/* Botones */
+.protube-app .btn {
+    padding: 10px 15px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.protube-app .btn-primary {
+    --bs-btn-color: #101410;
+    --bs-btn-bg: var(--pt-accent);
+    --bs-btn-border-color: var(--pt-accent);
+
+    --bs-btn-hover-color: #101410;
+    --bs-btn-hover-bg: var(--pt-accent-hover);
+    --bs-btn-hover-border-color: var(--pt-accent-hover);
+
+    --bs-btn-active-color: #101410;
+    --bs-btn-active-bg: #43d511;
+    --bs-btn-active-border-color: #43d511;
+
+    --bs-btn-disabled-color: #101410;
+    --bs-btn-disabled-bg: var(--pt-accent);
+    --bs-btn-disabled-border-color: var(--pt-accent);
+}
+
+.protube-app .btn-outline-primary,
+.protube-app .btn-outline-light,
+.protube-app .btn-outline-secondary {
+    --bs-btn-color: #eeeeee;
+    --bs-btn-bg: #222225;
+    --bs-btn-border-color: #363639;
+
+    --bs-btn-hover-color: white;
+    --bs-btn-hover-bg: #2d2d31;
+    --bs-btn-hover-border-color: var(--pt-accent);
+
+    --bs-btn-active-color: white;
+    --bs-btn-active-bg: #303034;
+    --bs-btn-active-border-color: var(--pt-accent);
+
+    --bs-btn-disabled-color: #93939b;
+    --bs-btn-disabled-bg: #202023;
+    --bs-btn-disabled-border-color: #363639;
+}
+
+.protube-app .btn-sm {
+    padding: 7px 12px;
+    font-size: 12px;
+}
+
+/* Campos de formulario */
+.protube-app .form-label {
+    color: #e4e4e7;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.protube-app .form-control {
+    min-width: 0;
+    padding: 12px 14px;
+
+    background: var(--pt-input);
+    color: var(--pt-text);
+    border: 1px solid #3a3a40;
+    border-radius: 9px;
+}
+
+.protube-app .form-control::placeholder {
+    color: #909098;
+}
+
+.protube-app .form-control:focus {
+    background: var(--pt-input);
+    color: var(--pt-text);
+    border-color: var(--pt-accent);
+    box-shadow: 0 0 0 3px rgb(83 252 24 / 12%);
+}
+
+.protube-app .form-control:disabled {
+    background: #1b1b1e;
+    color: #a0a0a8;
+}
+
+.protube-app textarea.form-control {
+    resize: vertical;
+}
+
+.protube-app .form-control[type='file'] {
+    border-style: dashed;
+}
+
+.protube-app .form-control::file-selector-button {
+    background: #303034;
+    color: var(--pt-text);
+}
+
+.protube-app .form-control:hover:not(:disabled)::file-selector-button {
+    background: #3b3b40;
+}
+
+.protube-app .form-text {
+    color: var(--pt-muted);
+}
+
+/* Superficie reutilizable para las páginas con formulario */
+.ui-panel {
+    padding: 32px;
+    background: var(--pt-panel);
+    border: 1px solid var(--pt-border);
+    border-radius: 18px;
+}
+
+/* Listas sin resultados */
+.empty-state {
+    padding: 28px;
+    color: var(--pt-muted);
+    border: 1px dashed #343439;
+    border-radius: 12px;
+}
+
+@media (max-width: 650px) {
+    .ui-panel {
+        padding: 22px;
+    }
+}

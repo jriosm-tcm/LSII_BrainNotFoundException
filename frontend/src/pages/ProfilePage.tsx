@@ -6,6 +6,7 @@ import type { AuthSession } from '../api/auth';
 import { getProfile, updateProfile, uploadAvatar } from '../api/profile';
 import type { Profile } from '../api/profile';
 import { getEnv } from '../utils/Env';
+import './ProfilePage.css';
 
 type ProfilePageProps = {
   session: AuthSession;
@@ -146,7 +147,7 @@ function ProfilePage({ session, onAvatarChange }: ProfilePageProps) {
 
   if (loading) {
     return (
-      <main className="container py-5">
+      <main className="profile-page ui-panel">
         <p role="status">Cargando perfil…</p>
       </main>
     );
@@ -154,7 +155,7 @@ function ProfilePage({ session, onAvatarChange }: ProfilePageProps) {
 
   if (!profile) {
     return (
-      <main className="container py-5">
+      <main className="profile-page ui-panel">
         <h1>Mi perfil</h1>
 
         <p className="alert alert-danger" role="alert">
@@ -171,7 +172,7 @@ function ProfilePage({ session, onAvatarChange }: ProfilePageProps) {
   const avatarSrc = profile.avatarUrl ? new URL(profile.avatarUrl, mediaBaseUrl).href : '';
 
   return (
-    <main className="container py-5" style={{ maxWidth: 640 }}>
+    <main className="profile-page ui-panel">
       <h1 className="mb-4">Mi perfil</h1>
 
       <p>
@@ -194,19 +195,12 @@ function ProfilePage({ session, onAvatarChange }: ProfilePageProps) {
         </p>
       )}
 
-      <form onSubmit={handleAvatarSubmit} className="mb-4">
+      <form onSubmit={handleAvatarSubmit} className="profile-avatar-form">
         <h2 className="h5">Imagen de perfil</h2>
 
         <div className="mb-3">
           {avatarSrc ? (
-            <img
-              src={avatarSrc}
-              alt={`Avatar de ${profile.username}`}
-              width={120}
-              height={120}
-              className="rounded-circle border"
-              style={{ objectFit: 'cover' }}
-            />
+            <p className="profile-hint">Todavía no tienes una imagen de perfil.</p>
           ) : (
             <p className="text-secondary">Todavía no tienes una imagen de perfil.</p>
           )}

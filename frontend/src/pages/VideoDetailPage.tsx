@@ -6,6 +6,7 @@ import type { AuthSession } from '../api/auth';
 import VideoPlayer from '../components/VideoPlayer';
 import VideoComments from '../components/VideoComments';
 import './VideoDetailPage.css';
+import '../styles/search-toolbar.css';
 
 type VideoDetailPageProps = {
   session: AuthSession | null;
@@ -69,7 +70,7 @@ const VideoDetailPage = ({ session }: VideoDetailPageProps) => {
 
   return (
     <div className="video-detail-page">
-      <form className="catalog-toolbar" onSubmit={handleSearch}>
+      <form className="search-toolbar" onSubmit={handleSearch}>
         <img src="/protube-logo-removebg-preview.png" alt="ProTube" className="search-logo" />
 
         <input

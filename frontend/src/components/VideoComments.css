@@ -1,0 +1,29 @@
+.video-comments {
+    width: 100%;
+    margin-top: 34px;
+    padding-top: 24px;
+    border-top: 1px solid var(--pt-border);
+}
+
+.video-comments .comment-card {
+    --bs-card-bg: var(--pt-panel);
+    --bs-card-color: var(--pt-text);
+    --bs-card-border-color: var(--pt-border);
+
+    border-radius: 12px;
+    scroll-margin-top: 160px;
+}
+
+.video-comments .card-body {
+    padding: 18px;
+}
+
+.video-comments .comment-content {
+    margin: 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.video-comments time {
+    color: var(--pt-muted);
+}

@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../api/auth';
 import type { AuthSession } from '../api/auth';
+import './LoginPage.css';
 
 type LoginPageProps = {
   onLogin: (session: AuthSession) => void;
@@ -45,7 +46,7 @@ function LoginPage({ onLogin }: LoginPageProps) {
   }
 
   return (
-    <main className="container py-5" style={{ maxWidth: 480 }}>
+    <main className="login-page ui-panel">
       <h1 className="mb-4">Iniciar sesión</h1>
 
       <form onSubmit={handleSubmit}>

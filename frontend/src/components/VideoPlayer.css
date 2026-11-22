@@ -1,0 +1,19 @@
+.video-player-container {
+    width: 100%;
+}
+
+.video-player-container .video-player {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: contain;
+
+    margin-bottom: 16px;
+    background: black;
+    border: 1px solid #2c2c30;
+    border-radius: 12px;
+}
+
+.video-player-container > p {
+    font-size: 13px;
+}

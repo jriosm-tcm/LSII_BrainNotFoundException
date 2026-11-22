@@ -1,0 +1,13 @@
+.upload-page {
+    width: calc(100% - 32px);
+    max-width: 740px;
+    margin: 40px auto;
+}
+
+.upload-page textarea {
+    min-height: 140px;
+}
+
+.upload-page input[type='file'] {
+    padding: 16px;
+}

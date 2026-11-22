@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import type { AuthSession } from '../api/auth';
 import { uploadVideo } from '../api/videos';
+import './UploadVideoPage.css';
 
 type UploadVideoPageProps = {
   session: AuthSession;
@@ -86,7 +87,7 @@ function UploadVideoPage({ session }: UploadVideoPageProps) {
   }
 
   return (
-    <main className="container py-5" style={{ maxWidth: 720 }}>
+    <main className="upload-page ui-panel">
       <h1 className="mb-4">Subir vídeo</h1>
 
       <form onSubmit={handleSubmit}>

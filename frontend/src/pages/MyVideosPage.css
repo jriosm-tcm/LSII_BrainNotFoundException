@@ -1,0 +1,21 @@
+.my-videos-page {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 36px clamp(16px, 4vw, 60px) 70px;
+}
+
+.my-videos-page .video-item {
+    padding: 14px;
+
+    background: var(--pt-panel);
+    border: 1px solid var(--pt-border);
+    border-radius: 14px;
+}
+
+.my-videos-page .video-item > .btn {
+    align-self: flex-start;
+}
+
+.my-videos-page .video-item form {
+    width: 100%;
+}

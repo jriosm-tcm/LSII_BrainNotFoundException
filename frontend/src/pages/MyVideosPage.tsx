@@ -6,7 +6,8 @@ import { getMyVideos } from '../api/videos';
 import type { Video } from '../useAllVideos';
 import { getEnv } from '../utils/Env';
 import EditVideoForm from '../components/EditVideoForm';
-import './VideosPage.css';
+import '../styles/video-catalog.css';
+import './MyVideosPage.css';
 
 type MyVideosPageProps = {
   session: AuthSession;
@@ -72,7 +73,7 @@ function MyVideosPage({ session }: MyVideosPageProps) {
   }
 
   return (
-    <main className="container py-5">
+    <main className="my-videos-page">
       <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
         <h1 className="mb-0">Mis vídeos</h1>
 
@@ -98,7 +99,7 @@ function MyVideosPage({ session }: MyVideosPageProps) {
       {!loading && !error && videos.length === 0 && <p className="empty-state">Todavía no has subido ningún vídeo.</p>}
 
       {!loading && !error && (
-        <div className="video-grid">
+        <div className="video-catalog">
           {videos.map((video) => (
             <article key={video.id} className="video-item">
               <Link to={`/video/${video.id}`} className="text-decoration-none">
