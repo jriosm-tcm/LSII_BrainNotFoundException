@@ -46,7 +46,7 @@ services:
       - type: bind
         source: ${ENV_PROTUBE_STORE_DIR:-./store}
         target: /store
-        read_only: true
+        read_only: false
 
 volumes:
   postgres_data:
