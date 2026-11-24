@@ -10,7 +10,7 @@ import { uploadVideo, trackVideoOpen, getMyVideos } from './api/videos';
 import { getEnv } from './utils/Env';
 import { getProfile } from './api/profile';
 
-const mediaUrl = (path: string) => path ? new URL(path, getEnv().MEDIA_BASE_URL + '/').toString() : '';
+const mediaUrl = (path: string) => path ? new URL(path, new URL(getEnv().MEDIA_BASE_URL + '/', window.location.origin)).toString() : '';
 
 function App() {
   const [query, setQuery] = useState('');
